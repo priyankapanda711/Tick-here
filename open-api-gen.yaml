@@ -1,0 +1,474 @@
+openapi: 3.0.0
+info:
+  title: Event Ticketing API
+  version: 1.0.0
+  description: API for managing users, events, locations, seats, and tickets.
+
+servers:
+  - url: http://localhost:8000/
+
+paths:
+  /auth/user/login:
+    post:
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+
+  /auth/admin/login:
+    post:
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+
+  /users:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: User created
+
+  /admins:
+    post:
+      summary: Register a new admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Admin"
+      responses:
+        "201":
+          description: Admin created
+
+  /:
+    get:
+      summary: Get all events
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventListItemResponse"
+              example:
+                - id: 101
+                  title: "Tech Conference 2025"
+                  description: "Annual conference on emerging tech."
+                  start_datetime: "2025-08-01T09:00:00"
+                  end_datetime: "2025-08-03T18:00:00"
+                  admin_id: 12
+                - id: 102
+                  title: "Art Gala 2025"
+                  description: "Showcase of local and international artists."
+                  start_datetime: "2025-09-15T17:00:00"
+                  end_datetime: "2025-09-15T22:00:00"
+                  admin_id: 14
+  /create-event:
+    post:
+      summary: Create a new event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        "201":
+          description: Event created
+
+  /events/{eventId}:
+    get:
+      summary: Get event by ID
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Event details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventResponse"
+              example:
+                id: 123
+                title: "Music Festival 2025"
+                description: "An amazing weekend of music and fun."
+                start_datetime: "2025-07-10T18:00:00"
+                end_datetime: "2025-07-12T23:00:00"
+                admin_id: 45
+                locations:
+                  - id: 10
+                    name: "Open Grounds"
+                    state: "California"
+                    city: "Los Angeles"
+                    available_seats: 500
+                tickets_sold: 120
+    put:
+      summary: Update event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        "200":
+          description: Event updated
+    delete:
+      summary: Delete event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Event deleted
+
+  /locations:
+    post:
+      summary: Add a location to an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Location"
+      responses:
+        "201":
+          description: Location created
+
+  /locations/by-event/{eventId}:
+    get:
+      summary: Get all locations for a specific event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Locations list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LocationWithId"
+              example:
+                - id: 301
+                  name: "Sunset Hall"
+                  state: "Texas"
+                  city: "Dallas"
+                  event_id: 101
+                  available_seats: 450
+                - id: 302
+                  name: "Riverfront Stage"
+                  state: "Texas"
+                  city: "Austin"
+                  event_id: 101
+                  available_seats: 600
+
+  /seats:
+    post:
+      summary: Add seats to a location
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Seat"
+      responses:
+        "201":
+          description: Seats created
+
+  /seats/by-location/{locationId}:
+    get:
+      summary: Get seats for a location
+      parameters:
+        - name: locationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Seat list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SeatWithId"
+              example:
+                - id: 1
+                  location_id: 301
+                  seat_number: "A1"
+                  category: "VIP"
+                  is_booked: false
+                - id: 2
+                  location_id: 301
+                  seat_number: "A2"
+                  category: "VIP"
+                  is_booked: true
+                - id: 3
+                  location_id: 301
+                  seat_number: "B1"
+                  category: "General"
+                  is_booked: false
+
+  /tickets:
+    post:
+      summary: Book a ticket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Ticket"
+      responses:
+        "201":
+          description: Ticket booked
+
+  /tickets/{ticketId}:
+    delete:
+      summary: Cancel a ticket
+      parameters:
+        - name: ticketId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Ticket cancelled
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    User:
+      type: object
+      required: [username, name, email, phone, password]
+      properties:
+        username:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        password:
+          type: string
+
+    Admin:
+      type: object
+      required: [username, name, email, phone, password]
+      properties:
+        username:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        password:
+          type: string
+
+    Event:
+      type: object
+      required:
+        - title
+        - description
+        - start_date
+        - end_date
+        - start_time
+        - end_time
+        - admin_id
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        admin_id:
+          type: integer
+
+    EventResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        start_datetime:
+          type: string
+          format: date-time
+        end_datetime:
+          type: string
+          format: date-time
+        admin_id:
+          type: integer
+        locations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              state:
+                type: string
+              city:
+                type: string
+              available_seats:
+                type: integer
+        tickets_sold:
+          type: integer
+
+    EventListItemResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        start_datetime:
+          type: string
+          format: date-time
+        end_datetime:
+          type: string
+          format: date-time
+        admin_id:
+          type: integer
+
+    Location:
+      type: object
+      required: [name, state, city, event_id, available_seats]
+      properties:
+        name:
+          type: string
+        state:
+          type: string
+        city:
+          type: string
+        event_id:
+          type: integer
+        available_seats:
+          type: integer
+
+    LocationWithId:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        state:
+          type: string
+        city:
+          type: string
+        event_id:
+          type: integer
+        available_seats:
+          type: integer
+
+    Seat:
+      type: object
+      required: [location_id, seat_number, category]
+      properties:
+        location_id:
+          type: integer
+        seat_number:
+          type: string
+        category:
+          type: string
+        is_booked:
+          type: boolean
+
+    SeatWithId:
+      type: object
+      properties:
+        id:
+          type: integer
+        location_id:
+          type: integer
+        seat_number:
+          type: string
+        category:
+          type: string
+        is_booked:
+          type: boolean
+
+    Ticket:
+      type: object
+      required: [user_id, event_id, seat_id, booked_at, status]
+      properties:
+        user_id:
+          type: integer
+        event_id:
+          type: integer
+        seat_id:
+          type: integer
+        booked_at:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [booked, cancelled]
