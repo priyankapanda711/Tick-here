@@ -471,4 +471,4 @@ components:
           format: date-time
         status:
           type: string
-          enum: [booked, cancelled]
+          enum: [booked, cancelled, pending]
