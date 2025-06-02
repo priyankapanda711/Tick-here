@@ -3,13 +3,41 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class UserController extends Controller
 {
-    //
+    //For Authentication of a user
+    public function login()
+    {
+        try {
+            $data = request()->validate([
+                'email' => 'required|email',
+                'password' => 'required|min:8'
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
+
+        $user = User::where('email', $data['email'])->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Authentication Failed',
+            ], 404);
+        } else {
+            return response()->json([
+                'success' => true,
+                'message' => 'Authentication Successful',
+                'data' => $user
+            ], 200);
+        }
+    }
+
+    //For Registering a new User
     public function store()
     {
         try {
