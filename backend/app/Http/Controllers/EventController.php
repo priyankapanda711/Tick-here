@@ -22,6 +22,7 @@ class EventController extends Controller
             $data = request()->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'required|string|min:10',
+                'thumbnail' => 'required|image',
                 'start_date_time' => 'required|date',
                 'end_date_time' => 'required|date|after_or_equal:start_date_time',
                 'admin_id' => 'required|integer|exists:admins,id',
@@ -29,6 +30,8 @@ class EventController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
+
+        $data['thumbnail'] = request()->file('thumbnail')->store('thumbnails', 'public');
 
         $event = Event::create($data);
 

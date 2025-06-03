@@ -79,9 +79,32 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: "#/components/schemas/Event"
+              type: object
+              required:
+                - title
+                - description
+                - start_date_time
+                - end_date_time
+                - admin_id
+                - thumbnail
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                start_date_time:
+                  type: string
+                  format: date-time
+                end_date_time:
+                  type: string
+                  format: date-time
+                admin_id:
+                  type: integer
+                thumbnail:
+                  type: string
+                  format: binary
       responses:
         "201":
           description: Event created
@@ -112,9 +135,31 @@ paths:
             type: integer
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: "#/components/schemas/Event"
+              type: object
+              required:
+                - title
+                - description
+                - start_date_time
+                - end_date_time
+                - admin_id
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                start_date_time:
+                  type: string
+                  format: date-time
+                end_date_time:
+                  type: string
+                  format: date-time
+                admin_id:
+                  type: integer
+                thumbnail:
+                  type: string
+                  format: binary
       responses:
         "200":
           description: Event updated
@@ -293,6 +338,7 @@ components:
         - start_date_time
         - end_date_time
         - admin_id
+        - thumbnail
       properties:
         title:
           type: string
@@ -306,6 +352,10 @@ components:
           format: date-time
         admin_id:
           type: integer
+        thumbnail:
+          type: string
+          format: binary
+          description: Image file to upload as thumbnail
 
     EventResponse:
       type: object
@@ -324,12 +374,9 @@ components:
           format: date-time
         admin_id:
           type: integer
-        locations:
-          type: array
-          items:
-            $ref: "#/components/schemas/LocationWithId"
-        tickets_sold:
-          type: integer
+        thumbnail:
+          type: string
+          description: Relative path to thumbnail image (e.g., thumbnails/filename.jpg)
 
     EventListItemResponse:
       type: object
@@ -348,6 +395,9 @@ components:
           format: date-time
         admin_id:
           type: integer
+        thumbnail:
+          type: string
+          description: Relative path to thumbnail image (e.g., thumbnails/filename.jpg)
 
     City:
       type: object
