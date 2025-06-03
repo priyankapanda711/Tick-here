@@ -60,7 +60,7 @@ paths:
         "201":
           description: Admin created
 
-  /:
+  /events:
     get:
       summary: Get all events
       responses:
