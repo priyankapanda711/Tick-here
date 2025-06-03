@@ -72,19 +72,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/EventListItemResponse"
-              example:
-                - id: 101
-                  title: "Tech Conference 2025"
-                  description: "Annual conference on emerging tech."
-                  start_datetime: "2025-08-01T09:00:00"
-                  end_datetime: "2025-08-03T18:00:00"
-                  admin_id: 12
-                - id: 102
-                  title: "Art Gala 2025"
-                  description: "Showcase of local and international artists."
-                  start_datetime: "2025-09-15T17:00:00"
-                  end_datetime: "2025-09-15T22:00:00"
-                  admin_id: 14
+
   /create-event:
     post:
       summary: Create a new event
@@ -114,20 +102,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EventResponse"
-              example:
-                id: 123
-                title: "Music Festival 2025"
-                description: "An amazing weekend of music and fun."
-                start_datetime: "2025-07-10T18:00:00"
-                end_datetime: "2025-07-12T23:00:00"
-                admin_id: 45
-                locations:
-                  - id: 10
-                    name: "Open Grounds"
-                    state: "California"
-                    city: "Los Angeles"
-                    available_seats: 500
-                tickets_sold: 120
     put:
       summary: Update event
       parameters:
@@ -187,19 +161,31 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/LocationWithId"
-              example:
-                - id: 301
-                  name: "Sunset Hall"
-                  state: "Texas"
-                  city: "Dallas"
-                  event_id: 101
-                  available_seats: 450
-                - id: 302
-                  name: "Riverfront Stage"
-                  state: "Texas"
-                  city: "Austin"
-                  event_id: 101
-                  available_seats: 600
+
+  /cities:
+    post:
+      summary: Add a new city
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/City"
+      responses:
+        "201":
+          description: City created
+
+    get:
+      summary: Get all cities
+      responses:
+        "200":
+          description: List of cities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/City"
 
   /seats:
     post:
@@ -231,22 +217,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/SeatWithId"
-              example:
-                - id: 1
-                  location_id: 301
-                  seat_number: "A1"
-                  category: "VIP"
-                  is_booked: false
-                - id: 2
-                  location_id: 301
-                  seat_number: "A2"
-                  category: "VIP"
-                  is_booked: true
-                - id: 3
-                  location_id: 301
-                  seat_number: "B1"
-                  category: "General"
-                  is_booked: false
 
   /tickets:
     post:
@@ -320,28 +290,20 @@ components:
       required:
         - title
         - description
-        - start_date
-        - end_date
-        - start_time
-        - end_time
+        - start_date_time
+        - end_date_time
         - admin_id
       properties:
         title:
           type: string
         description:
           type: string
-        start_time:
+        start_date_time:
           type: string
-          format: time
-        end_time:
+          format: date-time
+        end_date_time:
           type: string
-          format: time
-        start_date:
-          type: string
-          format: date
-        end_date:
-          type: string
-          format: date
+          format: date-time
         admin_id:
           type: integer
 
@@ -354,10 +316,10 @@ components:
           type: string
         description:
           type: string
-        start_datetime:
+        start_date_time:
           type: string
           format: date-time
-        end_datetime:
+        end_date_time:
           type: string
           format: date-time
         admin_id:
@@ -365,18 +327,7 @@ components:
         locations:
           type: array
           items:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
-              state:
-                type: string
-              city:
-                type: string
-              available_seats:
-                type: integer
+            $ref: "#/components/schemas/LocationWithId"
         tickets_sold:
           type: integer
 
@@ -389,25 +340,36 @@ components:
           type: string
         description:
           type: string
-        start_datetime:
+        start_date_time:
           type: string
           format: date-time
-        end_datetime:
+        end_date_time:
           type: string
           format: date-time
         admin_id:
           type: integer
 
-    Location:
+    City:
       type: object
-      required: [name, state, city, event_id, available_seats]
+      required: [state, city, event_id]
       properties:
-        name:
-          type: string
+        id:
+          type: integer
         state:
           type: string
         city:
           type: string
+        event_id:
+          type: integer
+
+    Location:
+      type: object
+      required: [building_name, city_id, event_id, available_seats]
+      properties:
+        building_name:
+          type: string
+        city_id:
+          type: integer
         event_id:
           type: integer
         available_seats:
@@ -418,16 +380,16 @@ components:
       properties:
         id:
           type: integer
-        name:
+        building_name:
           type: string
-        state:
-          type: string
-        city:
-          type: string
+        city_id:
+          type: integer
         event_id:
           type: integer
         available_seats:
           type: integer
+        city:
+          $ref: "#/components/schemas/City"
 
     Seat:
       type: object

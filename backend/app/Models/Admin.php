@@ -16,4 +16,9 @@ class Admin extends Model
         'username',
         'phone',
     ];
+
+    public function Event()
+    {
+        return $this->hasMany(Event::class);
+    }
 }
