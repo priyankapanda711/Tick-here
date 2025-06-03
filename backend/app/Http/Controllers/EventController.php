@@ -7,6 +7,14 @@ use Illuminate\Validation\ValidationException;
 
 class EventController extends Controller
 {
+    //get all the events
+    public function index(){
+        $events = Event::orderBy("created_at","desc")->paginate(10);
+        return response()->json([
+                'success' => true,
+                'payload' =>$events
+            ], 200);
+    }
     //
     public function getEvent(Event $event)
     {
