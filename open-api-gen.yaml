@@ -125,6 +125,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EventResponse"
+    delete:
+      summary: Delete event
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Event deleted
+  /events/edit/{eventId}:
     put:
       summary: Update event
       parameters:
@@ -163,18 +175,6 @@ paths:
       responses:
         "200":
           description: Event updated
-    delete:
-      summary: Delete event
-      parameters:
-        - name: eventId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "204":
-          description: Event deleted
-
   /locations:
     post:
       summary: Add a location to an event

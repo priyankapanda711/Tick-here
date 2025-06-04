@@ -8,14 +8,16 @@ use Illuminate\Validation\ValidationException;
 class EventController extends Controller
 {
     //get all the events
-    public function index(){
-        $events = Event::orderBy("created_at","desc")->paginate(10);
+    public function index()
+    {
+        $events = Event::orderBy("created_at", "desc")->paginate(10);
         return response()->json([
-                'success' => true,
-                'payload' =>$events
-            ], 200);
+            'success' => true,
+            'payload' => $events
+        ], 200);
     }
-    //
+
+    //get an event by its Id
     public function getEvent(Event $event)
     {
         return response()->json([
@@ -24,6 +26,7 @@ class EventController extends Controller
         ]);
     }
 
+    //Creates an event
     public function store()
     {
         try {
@@ -52,6 +55,24 @@ class EventController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error while creating a event',
+            ], 404);
+        }
+    }
+
+    //deletes an Event
+    public function delete(Event $event)
+    {
+        $res = $event->delete();
+
+        if ($res) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Event deleted'
+            ], 204);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Internal Server Error'
             ], 404);
         }
     }

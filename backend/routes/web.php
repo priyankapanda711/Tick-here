@@ -15,3 +15,4 @@ Route::post('/auth/admin/login', [AdminController::class, 'login']);
 Route::post('/create-event', [EventController::class, 'store']);
 Route::get('/events/{event}', [EventController::class, 'getEvent']);
 Route::post('/', [EventController::class, 'index']);
+Route::delete('/events/{event}', [EventController::class, 'delete']);
