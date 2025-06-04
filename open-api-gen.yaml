@@ -405,6 +405,8 @@ components:
       properties:
         id:
           type: integer
+        country:
+          type: string
         state:
           type: string
         city:
