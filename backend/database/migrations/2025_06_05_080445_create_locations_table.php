@@ -15,14 +15,10 @@ class CreateLocationsTable extends Migration
     {
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
-            $table->string('building_name');
-            $table->unsignedBigInteger('city_id');
-            $table->unsignedBigInteger('event_id');
-            $table->unsignedBigInteger('available_seats');
+            $table->string('country')->unique();
+            $table->string('state')->unique();
+            $table->string('city');
             $table->timestamps();
-
-            $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
-            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
         });
     }
 

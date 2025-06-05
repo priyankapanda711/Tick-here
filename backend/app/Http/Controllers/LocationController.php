@@ -2,22 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\cities;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use App\Models\locations;
 use Illuminate\Validation\ValidationException;
 
-class CitiesController extends Controller
+class LocationController extends Controller
 {
     //
+    public function index()
+    {
+        $cities = locations::get();
+        return response()->json([
+            'success' => true,
+            'message' => "Cities fetched",
+            'data' => $cities
+        ]);
+    }
     public function create()
     {
         try {
             $data = request()->validate([
                 "country" => "required|string",
                 "state" => "required|string",
-                "city" => "required|string",
-                "event_id" => ["required", "integer", Rule::exists('events', 'id')]
+                "city" => "required|string"
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -26,7 +32,7 @@ class CitiesController extends Controller
             ], 404);
         }
 
-        $res = cities::create($data);
+        $res = locations::create($data);
 
         if ($res) {
             return response()->json([

@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\locations;
+use App\Models\venue;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
-class LocationsController extends Controller
+class VenueController extends Controller
 {
+    //
     public function create()
     {
         try {
             $data = request()->validate([
                 "building_name" => "required",
-                "city_id" => ['required', Rule::exists('cities', 'id')],
-                "event_id" => ['required', Rule::exists('events', 'id')],
+                "city_id" => ['required', Rule::exists('locations', 'id')],
                 "available_seats" => "required|min:2"
             ]);
         } catch (ValidationException $e) {
@@ -25,7 +25,7 @@ class LocationsController extends Controller
             ], 404);
         }
 
-        $res = locations::create($data);
+        $res = venue::create($data);
 
         if ($res) {
             return response()->json([
