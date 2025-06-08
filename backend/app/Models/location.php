@@ -5,7 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class location extends Model
+class Location extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'location_name',
+        'state',
+        'country'
+    ];
+
+    //this is used to establish the relationship between location and event_venue table
+    public function eventVenues(){
+        return $this->hasMany(EventVenue::class);
+    }
 }

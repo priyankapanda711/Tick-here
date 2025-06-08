@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Request;
 use Throwable;
 
 class UserController extends Controller
@@ -23,16 +25,14 @@ class UserController extends Controller
 
         $user = User::where('email', $data['email'])->first();
 
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Authentication Failed',
-            ], 404);
+        if (!$user || ! Hash::check($data['password'], $user->password)) {
+            throw ValidationException::withMessages(['email' => ['Invalid credentials']]);
         } else {
             return response()->json([
                 'success' => true,
                 'message' => 'Authentication Successful',
-                'data' => $user
+                'data' => $user,
+                'token' => $user->createToken('user-token')->plainTextToken
             ], 200);
         }
     }
@@ -52,13 +52,56 @@ class UserController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        $data['password'] = bcrypt($data['password']);
+        $data['password'] = Hash::make($data['password']);
 
         $user = User::create($data);
 
         return response()->json([
             'message' => 'User created successfully',
-            'user' => $user
+            'user' => $user,
+            'token' => $user->createToken('user-token')->plainTextToken
         ], 201);
+    }
+
+    //For logging out a user
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'Logged out'],200);
+    }
+
+    //For getting current user profile
+    public function profile(Request $request)
+    {
+        return response()->json([
+            'user' => $request->user()
+        ], 200);
+    }
+
+    //For updating user profile
+    public function update(Request $request)
+    {
+        try {
+            $user = $request->user();
+
+            $data = request()->validate([
+                'name' => 'required|min:8',
+                'username' => ['required', 'min:8', Rule::unique('users', 'username')->ignore($request->user()->id)],
+                'phone' => ['required', 'digits:10', Rule::unique('users', 'phone')->ignore($request->user()->id)],
+               'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($request->user()->id)],
+                'password' => 'required|min:8',
+            ]);
+
+            if (isset($data['password'])) {
+                $data['password'] = Hash::make($data['password']);
+            }
+
+            $user->update($data);
+
+            return response()->json(['message' => 'Profile updated']);
+
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
     }
 }

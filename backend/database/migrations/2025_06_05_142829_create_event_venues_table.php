@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateEventVenuesTable extends Migration
 {
+
     /**
      * Run the migrations.
      *
@@ -18,7 +19,7 @@ class CreateEventVenuesTable extends Migration
             $table->unsignedBigInteger('event_id');
             $table->unsignedBigInteger('location_id');
             $table->unsignedBigInteger('venue_id');
-            $table->unsignedBigInteger('available seats');
+            $table->integer('available_seats');
             $table->dateTime('start_date_time');
             $table->dateTime('end_date_time');
             $table->timestamps();

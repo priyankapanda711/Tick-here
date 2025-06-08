@@ -9,5 +9,13 @@ class Event extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'thumbnail', 'start_date_time', 'end_date_time', 'admin_id'];
+    protected $fillable = ['title', 'description', 'thumbnail',  'admin_id','category_id'];
+
+    //get all the different vanues for an event , where the event will going to be held
+    public function EventVenue()
+    {
+        return $this->hasMany(EventVenue::class);
+    }
 }
+
+

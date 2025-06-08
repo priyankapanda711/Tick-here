@@ -18,11 +18,12 @@ class CreateEventsTable extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('thumbnail')->nullable();
-            $table->dateTime('start_date_time');
-            $table->dateTime('end_date_time');
+            $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('admin_id');
             $table->timestamps();
 
+            // Foreign key constraints
+            $table->foreign('category_id')->references('id')->on('event_categories')->onDelete('cascade');
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
         });
     }

@@ -15,7 +15,11 @@ class CreateVenuesTable extends Migration
     {
         Schema::create('venues', function (Blueprint $table) {
             $table->id();
+            $table->string('venue_name');
+            $table->unsignedBigInteger('location_id');
             $table->timestamps();
+
+            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
         });
     }
 

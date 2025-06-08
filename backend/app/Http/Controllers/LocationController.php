@@ -2,28 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Location;
 use App\Models\locations;
 use Illuminate\Validation\ValidationException;
 
 class LocationController extends Controller
 {
-    //
+    //get all the locations(admin)
     public function index()
     {
-        $cities = locations::get();
+        $location = Location::get();
         return response()->json([
             'success' => true,
-            'message' => "Cities fetched",
-            'data' => $cities
+            'message' => "location fetched",
+            'data' => $location
         ]);
     }
+
+    //create a location by admin
     public function create()
     {
         try {
             $data = request()->validate([
                 "country" => "required|string",
                 "state" => "required|string",
-                "city" => "required|string"
+                "location_name" => "required|string"
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -32,12 +35,12 @@ class LocationController extends Controller
             ], 404);
         }
 
-        $res = locations::create($data);
+        $res = Location::create($data);
 
         if ($res) {
             return response()->json([
                 'success' => true,
-                'message' => "City Created"
+                'message' => "Location Created"
             ]);
         } else {
             return response()->json([

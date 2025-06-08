@@ -26,7 +26,7 @@ class EventController extends Controller
         ]);
     }
 
-    //Creates an event
+    //Creates an event (admin)
     public function store()
     {
         try {
@@ -34,8 +34,7 @@ class EventController extends Controller
                 'title' => 'required|string|max:255',
                 'description' => 'required|string|min:10',
                 'thumbnail' => 'required|image',
-                'start_date_time' => 'required|date',
-                'end_date_time' => 'required|date|after_or_equal:start_date_time',
+                'category_id' => 'required|integer|exists:event_categories,id',
                 'admin_id' => 'required|integer|exists:admins,id',
             ]);
         } catch (ValidationException $e) {
