@@ -149,10 +149,10 @@ paths:
           description: User profile updated successfully
 
   # events
-  /:
+  /events:
     get:
-      summary: Get all events (public)
-      tags: [Events, User, Admin]
+      summary: Get all events
+      tags: [Events, User]
       responses:
         '200': { description: List of events }
 
@@ -209,7 +209,7 @@ paths:
       responses:
         '201': { description: Created }
 
-  /events/{eventId}:
+  /events/{event}:
     get:
       summary: Get event by ID 
       tags: [Admin, User, Events]

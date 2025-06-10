@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\EventCategory;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class EventCategoryController extends Controller
 {
@@ -14,17 +16,12 @@ class EventCategoryController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $category = EventCategory::get();
+        return response()->json([
+            'success' => true,
+            'message' => "Category fetched",
+            'data' => $category
+        ]);
     }
 
     /**
@@ -33,9 +30,32 @@ class EventCategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        //
+        try {
+            $data = request()->validate([
+                "category_name" => "required"
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 404);
+        }
+
+        $res = EventCategory::create($data);
+
+        if ($res) {
+            return response()->json([
+                'success' => true,
+                'message' => "Category Created"
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => "Internal Server Error"
+            ], 404);
+        }
     }
 
     /**
@@ -55,21 +75,26 @@ class EventCategoryController extends Controller
      * @param  \App\Models\EventCategory  $eventCategory
      * @return \Illuminate\Http\Response
      */
-    public function edit(EventCategory $eventCategory)
+    public function update(EventCategory $category, Request $request)
     {
-        //
-    }
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Category not found.'
+            ], 404);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\EventCategory  $eventCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, EventCategory $eventCategory)
-    {
-        //
+        $validated = $request->validate([
+            "category_name" => "required",
+        ]);
+
+        $category->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category updated successfully.',
+            'data' => $category
+        ], 200);
     }
 
     /**
@@ -78,8 +103,20 @@ class EventCategoryController extends Controller
      * @param  \App\Models\EventCategory  $eventCategory
      * @return \Illuminate\Http\Response
      */
-    public function destroy(EventCategory $eventCategory)
+    public function delete(EventCategory $category)
     {
-        //
+        $res = $category->delete();
+
+        if ($res) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Category deleted'
+            ], 204);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Internal Server Error'
+            ], 404);
+        }
     }
 }

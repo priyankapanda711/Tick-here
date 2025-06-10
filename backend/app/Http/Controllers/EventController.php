@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class EventController extends Controller
@@ -27,7 +29,7 @@ class EventController extends Controller
     }
 
     //Creates an event (admin)
-    public function store()
+    public function create()
     {
         try {
             $data = request()->validate([
@@ -58,7 +60,7 @@ class EventController extends Controller
         }
     }
 
-    //deletes an Event
+    //deletes an Event (admin)
     public function delete(Event $event)
     {
         $res = $event->delete();
@@ -74,5 +76,31 @@ class EventController extends Controller
                 'message' => 'Internal Server Error'
             ], 404);
         }
+    }
+
+    //update an event (admin)
+    public function update(Request $request, Event $event)
+    {
+        if (!$event) {
+                return response()->json([
+                        'success' => false,
+                        'message' => 'Event not found.'
+                ], 404);
+        }
+
+        $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'thumbnail' => 'required|url',
+                'category_id' => ['required', 'integer', Rule::exists('event_categories', 'id')],
+        ]);
+
+        $event->update($validated);
+
+        return response()->json([
+                'success' => true,
+                'message' => 'Event updated successfully.',
+                'data' => $event
+        ], 200);
     }
 }
