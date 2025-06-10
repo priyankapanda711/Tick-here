@@ -34,4 +34,9 @@ class EventVenuesController extends Controller
             'data' => $venues
         ]);
     }
+
+    //get all the tickets for an event (admin only)
+    public function getTicketsByEvent($eventId){
+
+    }
 }

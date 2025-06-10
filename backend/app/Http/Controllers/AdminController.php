@@ -15,15 +15,16 @@ class AdminController extends Controller
     {
         try {
             $data = request()->validate([
-                'name' => 'required|min:8',
-                'username' => ['required', 'min:8', Rule::unique('admins', 'username')],
-                'phone' => ['required', 'digits:10', Rule::unique('admins', 'phone')],
+                'name' => 'required | min:8',
+                'phone' => ['digits:10', Rule::unique('admins', 'phone')],
                 'email' => ['required', 'email', Rule::unique('admins', 'email')],
                 'password' => 'required|min:8'
             ]);
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
+
+        $data['username'] = substr($data['email'], 0, strpos($data['email'], '@'));
 
         $data['password'] = Hash::make($data['password']);
 
