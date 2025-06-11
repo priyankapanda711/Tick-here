@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Hash;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use Request;
+use Illuminate\Http\Request;
 use Throwable;
 
 class UserController extends Controller
@@ -68,7 +68,7 @@ class UserController extends Controller
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Logged out'],200);
+        return response()->json(['message' => 'Logged out'], 200);
     }
 
     //For getting current user profile
@@ -89,7 +89,7 @@ class UserController extends Controller
                 'name' => 'required|min:8',
                 'username' => ['required', 'min:8', Rule::unique('users', 'username')->ignore($request->user()->id)],
                 'phone' => ['required', 'digits:10', Rule::unique('users', 'phone')->ignore($request->user()->id)],
-               'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($request->user()->id)],
+                'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($request->user()->id)],
                 'password' => 'required|min:8',
             ]);
 
@@ -100,7 +100,6 @@ class UserController extends Controller
             $user->update($data);
 
             return response()->json(['message' => 'Profile updated']);
-
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }

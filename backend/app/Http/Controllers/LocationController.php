@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Location;
-use App\Models\locations;
 use Illuminate\Validation\ValidationException;
-use Request;
+use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
@@ -73,24 +72,24 @@ class LocationController extends Controller
     public function update(Request $request, Location $location)
     {
         if (!$location) {
-                return response()->json([
-                        'success' => false,
-                        'message' => 'Location not found.'
-                ], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Location not found.'
+            ], 404);
         }
 
         $validated = $request->validate([
-                "country" => "required|string",
-                "state" => "required|string",
-                "location_name" => "required|string"
+            "country" => "required|string",
+            "state" => "required|string",
+            "location_name" => "required|string"
         ]);
 
         $location->update($validated);
 
         return response()->json([
-                'success' => true,
-                'message' => 'Location updated successfully.',
-                'data' => $location
+            'success' => true,
+            'message' => 'Location updated successfully.',
+            'data' => $location
         ], 200);
     }
 }
