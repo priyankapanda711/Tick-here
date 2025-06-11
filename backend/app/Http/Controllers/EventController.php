@@ -9,7 +9,7 @@ use Illuminate\Validation\ValidationException;
 
 class EventController extends Controller
 {
-    //get all the events
+    //get all the events (admin)
     public function index()
     {
         $events = Event::orderBy("created_at", "desc")->paginate(10);
@@ -19,9 +19,12 @@ class EventController extends Controller
         ], 200);
     }
 
-    //get an event by its Id
+    //get an event
     public function getEvent(Event $event)
     {
+        // Eager loading (gives the eventVenue details along with the event details)
+        $event = Event::with('eventVenue');
+
         return response()->json([
             'success' => true,
             'payload' => $event
@@ -36,6 +39,7 @@ class EventController extends Controller
                 'title' => 'required|string|max:255',
                 'description' => 'required|string|min:10',
                 'thumbnail' => 'required|image',
+                'duration' => 'required|integer',
                 'category_id' => 'required|integer|exists:event_categories,id',
                 'admin_id' => 'required|integer|exists:admins,id',
             ]);
@@ -82,25 +86,26 @@ class EventController extends Controller
     public function update(Request $request, Event $event)
     {
         if (!$event) {
-                return response()->json([
-                        'success' => false,
-                        'message' => 'Event not found.'
-                ], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Event not found.'
+            ], 404);
         }
 
         $validated = $request->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-                'thumbnail' => 'required|url',
-                'category_id' => ['required', 'integer', Rule::exists('event_categories', 'id')],
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'thumbnail' => 'required|url',
+            'duration' => 'required|integer',
+            'category_id' => ['required', 'integer', Rule::exists('event_categories', 'id')],
         ]);
 
         $event->update($validated);
 
         return response()->json([
-                'success' => true,
-                'message' => 'Event updated successfully.',
-                'data' => $event
+            'success' => true,
+            'message' => 'Event updated successfully.',
+            'data' => $event
         ], 200);
     }
 }

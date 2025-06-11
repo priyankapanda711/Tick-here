@@ -36,9 +36,8 @@ Route::post('/admin', [AdminController::class, 'store']);
 Route::post('/auth/admin/login', [AdminController::class, 'login']);
 
 // Public Event Data
-Route::post('/', [EventController::class, 'index']); // Get all events
 Route::get('/events/{event}', [EventController::class, 'getEvent']); // Get event details
-Route::get('/events/{eventId}/venues', [EventVenuesController::class, 'getVenuesByEvent']); // Venues for an event
+Route::get('/events/{event}/venues', [EventVenuesController::class, 'getVenuesByEvent']); // Venues for an event
 
 /**
  * PROTECTED ROUTES
@@ -46,8 +45,8 @@ Route::get('/events/{eventId}/venues', [EventVenuesController::class, 'getVenues
  */
 
 /**
-     * USER ROUTES
-     */
+ * USER ROUTES
+000 */
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/user/logout', [UserController::class, 'logout']);
     Route::get('/auth/user/profile', [UserController::class, 'profile']);
@@ -63,6 +62,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::put('/auth/admin/profile', [AdminController::class, 'update']);
 
     // Events
+    Route::post('/', [EventController::class, 'index']); // Get all events
     Route::post('/create-event', [EventController::class, 'create']);
     Route::delete('/events/{event}', [EventController::class, 'delete']);
     Route::put('/events/{event}', [EventController::class, 'update']);

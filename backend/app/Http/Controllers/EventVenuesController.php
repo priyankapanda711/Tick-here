@@ -8,26 +8,30 @@ use Illuminate\Http\Request;
 class EventVenuesController extends Controller
 {
     //get all the venues for an event and give the structured data in json format as response
-    public function getVenuesByEvent($eventId)
+    public function getVenuesByEvent($event)
     {
-        $venues = EventVenue::with(['venue', 'location'])
-            ->where('event_id', $eventId)
-            ->get()
-            ->map(function ($ev) {
-                return [
-                    'venue_id' => $ev->venue->id,
-                    'venue_name' => $ev->venue->venue_name,
-                    'location' => [
-                        'location_id' => $ev->location->id,
-                        'location_name' => $ev->location->location_name,
-                        'state' => $ev->location->state,
-                        'country' => $ev->location->country,
-                    ],
-                    'available_seats' => $ev->available_seats,
-                    'start_datetime' => $ev->start_datetime,
-                    'end_datetime' => $ev->end_datetime,
-                ];
-            });
+        $venues = EventVenue::with(['location', 'venue'])
+        ->where('event_id', $event->id)
+        ->get()
+        ->groupBy('location_id')
+        ->map(function ($group) {
+            $location = $group->first()->location;
+
+            return [
+                'location_id' => $location->id,
+                'location_name' => $location->location_name,
+                'state' => $location->state,
+                'country' => $location->country,
+                'venues' => $group->map(function ($ev) {
+                    return [
+                        'venue_id' => $ev->venue->id,
+                        'venue_name' => $ev->venue->venue_name,
+                        'available_seats' => $ev->available_seats,
+                        'start_datetime' => $ev->start_datetime
+                    ];
+                })->values()
+            ];
+        })->values(); // to re-index keys
 
         return response()->json([
             'success' => true,

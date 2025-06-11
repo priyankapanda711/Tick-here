@@ -28,7 +28,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginRequest"
+              $ref: "#/components/schemas/Admin"
       responses:
         "200":
           description: Login successful
@@ -50,32 +50,32 @@ paths:
     post:
       summary: Logout the current admin
       security:
-        - bearerAuth: []
+        - sanctum: []
       responses:
-        '200':
+        "200":
           description: admin logged out successfully
 
   /auth/admin/profile:
     get:
       summary: Get current admin profile
       security:
-        - bearerAuth: []
+        - sanctum: []
       responses:
-        '200':
+        "200":
           description: admin profile retrieved successfully
 
     put:
       summary: Update current admin profile
       security:
-        - bearerAuth: []
+        - sanctum: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Admin'
+              $ref: "#/components/schemas/Admin"
       responses:
-        '200':
+        "200":
           description: admin profile updated successfully
 
   /users:
@@ -95,7 +95,7 @@ paths:
                 password:
                   type: string
       responses:
-        '201':
+        "201":
           description: User registered successfully
 
   /auth/user/login:
@@ -113,68 +113,96 @@ paths:
                 password:
                   type: string
       responses:
-        '200':
+        "200":
           description: User logged in successfully
 
   /auth/user/logout:
     post:
       summary: Logout the current user
       security:
-        - bearerAuth: []
+        - sanctum: []
       responses:
-        '200':
+        "200":
           description: User logged out successfully
 
   /auth/user/profile:
     get:
       summary: Get current user profile
       security:
-        - bearerAuth: []
+        - sanctum: []
       responses:
-        '200':
+        "200":
           description: User profile retrieved successfully
 
     put:
       summary: Update current user profile
       security:
-        - bearerAuth: []
+        - sanctum: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
       responses:
-        '200':
+        "200":
           description: User profile updated successfully
 
   # events
   /events:
-    get:
-      summary: Get all events
-      tags: [Events, User]
-      responses:
-        '200': { description: List of events }
+  get:
+    tags:
+      - Admin - Events
+    summary: Get all events with optional filters (Admin)
+    description: |
+      Fetch a list of events with optional filters like category and location. 
+      Supports multiple categories.
+    parameters:
+      - name: category
+        in: query
+        description: Filter by one or more category names (comma-separated)
+        required: false
+        schema:
+          type: string
+          example: music,drama
+      - name: location
+        in: query
+        description: Filter events by location name
+        required: false
+        schema:
+          type: string
+          example: delhi
+    responses:
+      "200":
+        description: List of filtered events
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Event"
+      "401":
+        description: Unauthorized
 
-  /events/{eventId}/locations:
+  /events/{event}/venues:
     get:
-      summary: Get all locations for a specific event
+      summary: Get all venues for a specific event
       tags: [Events, User, Admin]
       parameters:
-        - name: eventId
+        - name: event
           in: path
           required: true
           schema:
             type: integer
       responses:
         "200":
-          description: Locations list
+          description: venues list
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/LocationWithId"
+                  $ref: "#/components/schemas/Venue"
 
   /events/{eventId}/tickets:
     get:
@@ -194,44 +222,44 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Ticket"
-  
+
   /admin/events:
     post:
       summary: Create event
       tags: [Admin, Events]
       security:
-        - bearerAuth: []
+        - sanctum: []
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/Event' }
+            schema: { $ref: "#/components/schemas/Event" }
       responses:
-        '201': { description: Created }
+        "201": { description: Created }
 
   /events/{event}:
     get:
-      summary: Get event by ID 
+      summary: Get event
       tags: [Admin, User, Events]
       security:
-        - bearerAuth: []
+        - sanctum: []
       parameters:
-        - name: id
+        - name: event
           in: path
           required: true
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Event details
 
     put:
       summary: Update an event
       tags: [Admin, Events]
       security:
-        - bearerAuth: []
+        - sanctum: []
       parameters:
-        - name: id
+        - name: event
           in: path
           required: true
           schema:
@@ -241,76 +269,82 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Event'
+              $ref: "#/components/schemas/Event"
       responses:
-        '200':
+        "200":
           description: Event updated successfully
 
     delete:
       summary: Delete an event(Admin)
       security:
-        - bearerAuth: []
+        - sanctum: []
       parameters:
-        - name: id
+        - name: event
           in: path
           required: true
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Event deleted successfully
 
-  /events/{category}:
-    get:
-      summary: Filter events by category
-      tags: [User, Events, Admin]
-      parameters:
-        - name: category_id
-          in: query
-          schema: { type: integer }
-      responses:
-        '200': { description: Filtered events }
-  
   /events/{location}:
     get:
-      summary: Filter events by location
-      tags: [User, Events, Admin]
+      tags:
+        - User - Events
+      summary: Get events in a specific location, with optional category filters
       parameters:
-        - name: location_id
+        - name: location
+          in: path
+          required: true
+          schema:
+            type: string
+            example: mumbai
+        - name: categories
           in: query
-          schema: { type: integer }
+          required: false
+          schema:
+            type: string
+            example: music,drama
       responses:
-        '200': { description: Filtered events }
+        "200":
+          description: Filtered event list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
 
   # categories
   /admin/categories:
     post:
       summary: Create a new category
       security:
-        - bearerAuth: []
+        - sanctum: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Category'
+              $ref: "#/components/schemas/EventCategory"
       responses:
-        '201':
+        "201":
           description: Category created successfully
 
     get:
       summary: Get all categories
-      tags: [ Admin]
+      tags: [Admin]
       responses:
-        '200': { description: Categories listed }
-  
-  /admin/categories/{id}:
+        "200": { description: Categories listed }
+
+  /admin/categories/{category}:
     put:
       summary: Update a category
       security:
-        - bearerAuth: []
+        - sanctum: []
       parameters:
-        - name: id
+        - name: category
           in: path
           required: true
           schema:
@@ -320,23 +354,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Category'
+              $ref: "#/components/schemas/EventCategory"
       responses:
-        '200':
+        "200":
           description: Category updated successfully
 
     delete:
       summary: Delete a category
       security:
-        - bearerAuth: []
+        - sanctum: []
       parameters:
-        - name: id
+        - name: category
           in: path
           required: true
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Category deleted successfully
 
   # locations
@@ -344,33 +378,33 @@ paths:
     post:
       summary: Create a new location
       security:
-        - bearerAuth: []
+        - sanctum: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Location'
+              $ref: "#/components/schemas/Location"
       responses:
-        '201':
+        "201":
           description: Location created successfully
 
     get:
       summary: List all locations
       tags: [Admin]
       security:
-        - bearerAuth: []
+        - sanctum: []
       responses:
-        '200':
+        "200":
           description: List of locations
 
-  /admin/locations/{id}:
+  /admin/locations/{location}:
     put:
       summary: Update a location
       security:
-        - bearerAuth: []
+        - sanctum: []
       parameters:
-        - name: id
+        - name: location
           in: path
           required: true
           schema:
@@ -380,23 +414,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Location'
+              $ref: "#/components/schemas/Location"
       responses:
-        '200':
+        "200":
           description: Location updated successfully
 
     delete:
       summary: Delete a location
       security:
-        - bearerAuth: []
+        - sanctum: []
       parameters:
-        - name: id
+        - name: location
           in: path
           required: true
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Location deleted successfully
 
   # venues
@@ -404,32 +438,32 @@ paths:
     get:
       summary: List all venues
       security:
-        - bearerAuth: []
+        - sanctum: []
       responses:
-        '200':
+        "200":
           description: List of venues
 
     post:
       summary: Create a new venue
       security:
-        - bearerAuth: []
+        - sanctum: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Venue'
+              $ref: "#/components/schemas/Venue"
       responses:
-        '201':
+        "201":
           description: Venue created successfully
 
-  /admin/venues/{id}:
+  /admin/venues/{venue}:
     put:
       summary: Update a venue
       security:
-        - bearerAuth: []
+        - sanctum: []
       parameters:
-        - name: id
+        - name: venue
           in: path
           required: true
           schema:
@@ -439,23 +473,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Venue'
+              $ref: "#/components/schemas/Venue"
       responses:
-        '200':
+        "200":
           description: Venue updated successfully
 
     delete:
       summary: Delete a venue
       security:
-        - bearerAuth: []
+        - sanctum: []
       parameters:
-        - name: id
+        - name: venue
           in: path
           required: true
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Venue deleted successfully
 
   # seats
@@ -469,7 +503,7 @@ paths:
           required: true
           schema: { type: integer }
       responses:
-        '200': { description: Seat list }
+        "200": { description: Seat list }
 
   # tickets
   /tickets:
@@ -477,73 +511,73 @@ paths:
       summary: Book a ticket
       tags: [User, Booking]
       security:
-        - bearerAuth: []
+        - sanctum: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Ticket'
+              $ref: "#/components/schemas/Ticket"
       responses:
-        '201': { description: Ticket created }   
-        
+        "201": { description: Ticket created }
+
     get:
       summary: Get user's tickets
       tags: [User, Booking]
       security:
-        - bearerAuth: []
+        - sanctum: []
       responses:
-        '200': { description: List of tickets }
+        "200": { description: List of tickets }
 
   /tickets/payment:
     post:
       summary: Make a payment
       tags: [User, Booking]
       security:
-        - bearerAuth: []
+        - sanctum: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Payment'
+              $ref: "#/components/schemas/Payment"
       responses:
-        '200': { description: Payment successful }
-        
+        "200": { description: Payment successful }
+
   /tickets/{ticket_id}:
     delete:
       summary: Cancel ticket
       tags: [User, Booking]
       security:
-        - bearerAuth: []
+        - sanctum: []
       parameters:
         - name: ticket_id
           in: path
           required: true
           schema: { type: integer }
       responses:
-        '200': { description: Cancelled }
+        "200": { description: Cancelled }
 
     get:
       summary: Download ticket as PDF
       tags: [User, Booking]
       security:
-        - bearerAuth: []
+        - sanctum: []
       parameters:
         - name: ticket_id
           in: path
           required: true
           schema: { type: integer }
       responses:
-        '200': { description: PDF generated }
-    
+        "200": { description: PDF generated }
+
   # Waiting List
   /waiting-list:
     post:
       summary: Join waiting list
       tags: [User, Booking]
       security:
-        - bearerAuth: []
+        - sanctum: []
       requestBody:
         required: true
         content:
@@ -553,19 +587,22 @@ paths:
               properties:
                 event_venue_id: { type: integer }
       responses:
-        '200': { description: Joined waiting list }
+        "200": { description: Joined waiting list }
 
-  /waiting-list:
     get:
       summary: Get current waiting list of user
       tags: [User, Booking]
       security:
-        - bearerAuth: []
+        - sanctum: []
       responses:
-        '200': { description: List returned }
-
+        "200": { description: List returned }
 
 components:
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     User:
       type: object
@@ -621,7 +658,7 @@ components:
         venue_id: { type: integer }
         available_seats: { type: integer }
         start_datetime: { type: string, format: date-time }
-        end_datetime: { type: string, format: date-time }
+        duration: { type: string, format: time }
 
     Seat:
       type: object
@@ -658,9 +695,3 @@ components:
       properties:
         id: { type: integer }
         name: { type: string }
-
-  securitySchemes:
-    sanctum:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT

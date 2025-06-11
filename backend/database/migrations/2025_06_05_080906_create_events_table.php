@@ -18,6 +18,7 @@ class CreateEventsTable extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('thumbnail')->nullable();
+            $table->time('duration');
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('admin_id');
             $table->timestamps();

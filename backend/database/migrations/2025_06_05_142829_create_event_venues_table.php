@@ -20,8 +20,7 @@ class CreateEventVenuesTable extends Migration
             $table->unsignedBigInteger('location_id');
             $table->unsignedBigInteger('venue_id');
             $table->integer('available_seats');
-            $table->dateTime('start_date_time');
-            $table->dateTime('end_date_time');
+            $table->dateTime('start_datetime');
             $table->timestamps();
 
             $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
