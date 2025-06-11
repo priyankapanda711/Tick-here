@@ -150,39 +150,39 @@ paths:
 
   # events
   /events:
-  get:
-    tags:
-      - Admin - Events
-    summary: Get all events with optional filters (Admin)
-    description: |
-      Fetch a list of events with optional filters like category and location. 
-      Supports multiple categories.
-    parameters:
-      - name: category
-        in: query
-        description: Filter by one or more category names (comma-separated)
-        required: false
-        schema:
-          type: string
-          example: music,drama
-      - name: location
-        in: query
-        description: Filter events by location name
-        required: false
-        schema:
-          type: string
-          example: delhi
-    responses:
-      "200":
-        description: List of filtered events
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/Event"
-      "401":
-        description: Unauthorized
+    get:
+      tags:
+        - Admin - Events
+      summary: Get all events with optional filters (Admin)
+      description: |
+        Fetch a list of events with optional filters like category and location. 
+        Supports multiple categories.
+      parameters:
+        - name: category
+          in: query
+          description: Filter by one or more category names (comma-separated)
+          required: false
+          schema:
+            type: string
+            example: music,drama
+        - name: location
+          in: query
+          description: Filter events by location name
+          required: false
+          schema:
+            type: string
+            example: delhi
+      responses:
+        "200":
+          description: List of filtered events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+        "401":
+          description: Unauthorized
 
   /events/{event}/venues:
     get:
