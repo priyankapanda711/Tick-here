@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventCategoryController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
@@ -86,4 +84,3 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::delete('/admin/categories/{category}', [EventCategoryController::class, 'delete']);
     Route::put('/admin/categories/{category}', [EventCategoryController::class, 'update']);
 });
-
