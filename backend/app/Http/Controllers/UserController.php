@@ -43,7 +43,6 @@ class UserController extends Controller
         try {
             $data = request()->validate([
                 'name' => 'required|min:8',
-                'phone' => ['required', 'digits:10', Rule::unique('users', 'phone')],
                 'email' => ['required', 'email', Rule::unique('users', 'email')],
                 'password' => 'required|min:8'
             ]);
