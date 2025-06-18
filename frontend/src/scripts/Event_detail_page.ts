@@ -8,9 +8,81 @@ interface Seat {
   is_booked?: boolean;
 }
 
-payment_button?.addEventListener('click',function () {
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null = null;
+
+  constructor(value: T) {
+    this.value = value;
+  }
+}
+
+class LinkedList<T> {
+  head: ListNode<T> | null = null;
+  private _size: number = 0;
+
+  get size(): number {
+    return this._size;
+  }
+
+  add(value: T) {
+    const node = new ListNode(value);
+    if (!this.head) {
+      this.head = node;
+    } else {
+      let current = this.head;
+      while (current.next) current = current.next;
+      current.next = node;
+    }
+    this._size++;
+  }
+
+  remove(value: T) {
+    if (!this.head) return;
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+      this._size--;
+      return;
+    }
+
+    let current = this.head;
+    while (current.next && current.next.value !== value) {
+      current = current.next;
+    }
+
+    if (current.next) {
+      current.next = current.next.next;
+      this._size--;
+    }
+  }
+
+  toArray(): T[] {
+    const result: T[] = [];
+    let current = this.head;
+    while (current) {
+      result.push(current.value);
+      current = current.next;
+    }
+    return result;
+  }
+}
+
+
+const selectedSeats = new LinkedList<string>();
+
+declare var Stripe: any;
+
+const stripe = Stripe('pk_test_51RbHaeHBa8sjr9k4JHp8VJ5uUgLSbkZsMlMvmjQnInpNhFV77x5cTJJVNInFQqJAHEBrCScxUVURFfKn0OHlN0mx008GD1wiuq');
+
+payment_button?.addEventListener('click',async function () {
+
+    if(selectedSeats.size===0){
+      alert("No Seats Selected ..... Select The Seats First!!")
+      return;
+    }
+
     const selected_items=document.querySelectorAll(".selected");
-    console.log(selected_items);
     const formdata=new FormData();
     formdata.append('place',selected_items[0].innerHTML);
 
@@ -37,15 +109,31 @@ payment_button?.addEventListener('click',function () {
 
     formdata.append('time',selected_items[2].innerHTML);
 
-    const seats=new Array();
-    for (let i = 3; i < selected_items.length; i++) {
-      seats.push(selected_items[i].innerHTML);
-    }
-    formdata.append('seats',seats as any);
+    formdata.append('seats', JSON.stringify(selectedSeats.toArray()));
 
     (formdata as FormData).forEach((value, key) => {
     console.log(`${key}: ${value}`);
     });
+
+    const final_price=document.getElementById("final_price");
+    const new_price=final_price?.innerHTML.substring(3);
+
+    //stripe payment integration
+    const response = await fetch("http://127.0.0.1:8000/api/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: new_price,
+        quantity: 1
+      })
+    });
+
+    const session = await response.json();
+    const result = await stripe.redirectToCheckout({ sessionId: session.id });
+
+    if (result.error) {
+      alert(result.error.message);
+    }
 })
 
 if (event_Id) {
@@ -188,6 +276,7 @@ function extractDateLabel(datetimeStr: string): string {
   }
 }
 
+
 function fetchAndRenderSeats(venueId: number) {
   fetch(`http://127.0.0.1:8000/api/venues/${venueId}/seats`)
     .then((res) => {
@@ -221,19 +310,20 @@ function fetchAndRenderSeats(venueId: number) {
             "p-[10px] rounded-[6px] text-center border-1 hover:bg-purple-100 cursor-pointer";
 
           seatEl.addEventListener("click", function () {
+            const seatNo = seatEl.textContent!;
             seatEl.classList.toggle("selected");
 
-            const selected = document.querySelectorAll(".seat-grid .selected");
-            const selectedNumbers = Array.from(selected)
-              .map((seat) => seat.textContent)
-              .join(", ");
-
-            if (selectedSeatsDisplay) {
-              selectedSeatsDisplay.textContent = selectedNumbers;
+            if (seatEl.classList.contains("selected")) {
+              selectedSeats.add(seatNo);
+            } else {
+              selectedSeats.remove(seatNo);
             }
 
+            const selectedArray = selectedSeats.toArray();
+            selectedSeatsDisplay!.textContent = selectedArray.join(", ");
+
             const unitPrice = parseFloat(data.seats[0].price);
-            const total = selected.length * unitPrice;
+            const total = selectedArray.length * unitPrice;
 
             if (finalPriceDisplay) {
               finalPriceDisplay.textContent = `Rs.${total.toFixed(2)}`;
@@ -248,3 +338,5 @@ function fetchAndRenderSeats(venueId: number) {
       console.error("Error loading seats:", err);
     });
 }
+
+

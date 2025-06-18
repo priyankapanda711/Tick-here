@@ -8,6 +8,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\VenueController;
 use App\Http\Controllers\EventVenuesController;
+use App\Http\Controllers\StripeController;
 
 // User registration & login
 Route::post('/users', [UserController::class, 'store']);
@@ -23,6 +24,8 @@ Route::get('/events/{event}/venues', [EventVenuesController::class, 'getVenuesBy
 
 // Seats data
 Route::get('/venues/{id}/seats', [VenueController::class, 'seats']);
+
+Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession']);
 
 /**
  * PROTECTED ROUTES

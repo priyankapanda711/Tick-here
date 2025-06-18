@@ -20,6 +20,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^7.3.1",
     "@tailwindcss/cli": "^4.1.8",
     "axios": "^1.9.0"
   }
