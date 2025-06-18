@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventCategoryController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Models\User;
@@ -112,4 +111,3 @@ Route::middleware(['auth:sanctum', 'admin', 'verified'])->group(function () {
     Route::delete('/admin/categories/{category}', [EventCategoryController::class, 'delete']);
     Route::put('/admin/categories/{category}', [EventCategoryController::class, 'update']);
 });
-
