@@ -17,6 +17,7 @@ class CreateVenuesTable extends Migration
             $table->id();
             $table->string('venue_name');
             $table->unsignedBigInteger('location_id');
+            $table->integer('available_seats');
             $table->timestamps();
 
             $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');

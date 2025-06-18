@@ -9,22 +9,6 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\VenueController;
 use App\Http\Controllers\EventVenuesController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-/**
- * PUBLIC ROUTES
- * Accessible without authentication
- */
-
 // User registration & login
 Route::post('/users', [UserController::class, 'store']);
 Route::post('/auth/user/login', [UserController::class, 'login']);
@@ -37,6 +21,9 @@ Route::post('/auth/admin/login', [AdminController::class, 'login']);
 Route::get('/events/{event}', [EventController::class, 'getEvent']); // Get event details
 Route::get('/events/{event}/venues', [EventVenuesController::class, 'getVenuesByEvent']); // Venues for an event
 
+// Seats data
+Route::get('/venues/{id}/seats', [VenueController::class, 'seats']);
+
 /**
  * PROTECTED ROUTES
  * Require authentication using Sanctum
@@ -44,7 +31,7 @@ Route::get('/events/{event}/venues', [EventVenuesController::class, 'getVenuesBy
 
 /**
  * USER ROUTES
-000 */
+ */
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/user/logout', [UserController::class, 'logout']);
     Route::get('/auth/user/profile', [UserController::class, 'profile']);
@@ -54,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
 /**
  * ADMIN ROUTES
  */
-Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/auth/admin/logout', [AdminController::class, 'logout']);
     Route::get('/auth/admin/profile', [AdminController::class, 'profile']);
     Route::put('/auth/admin/profile', [AdminController::class, 'update']);

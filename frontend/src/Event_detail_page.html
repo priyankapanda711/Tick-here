@@ -14,6 +14,12 @@
             font-family: "Poppins", sans-serif;
             font-weight: 400;
         }
+
+        .selected {
+            background: linear-gradient(#0A0418, #45006E) !important;
+            color: white !important;
+            border: 1px solid #8D77B7;
+        }
     </style>
 </head>
 
@@ -49,18 +55,20 @@
                 <div class="flex gap-[20px]">
                     <p id="event-duration"
                         class="bg-gradient-to-r from-[#0A0418] to-[#45006E] text-white rounded-[32px] px-[14px] py-[6px]">
+                        loading...
                     </p>
-                    <p
+                    <p id="event_category"
                         class="bg-gradient-to-r from-[#0A0418] to-[#45006E] text-white rounded-[32px] px-[14px] py-[6px]">
-                        Comedy Show
+                        loading...
                     </p>
                 </div>
                 <div>
                     <p class="text-[20px] font-[600] text-[#525252]">Performer Spotlight:</p>
                     <p id="event-description" class="text-[#525252] text-[16px]">Loading...</p>
                 </div>
-                <p class="bg-[#EAE2FF] rounded-[10px] px-[34px] py-[17px] w-[168px] text-center border-[1px]">
-                    RS. <span id="event-price">1299</span>
+                <p
+                    class="bg-[#EAE2FF] rounded-[10px] px-[34px] py-[17px] w-[168px] text-center border-[1px] cursor-pointer">
+                    RS. <span id="event-price">Loading...</span>
                 </p>
             </div>
         </div>
@@ -68,23 +76,16 @@
         <!-- Static content below (can be made dynamic later) -->
         <div class="flex flex-col gap-[35px]">
             <p class="font-[400] text-[24px]">Select Place</p>
-            <div class="flex flex-wrap gap-[8px]">
-                <p class="bg-[#EAE2FF] rounded-[10px] px-[34px] py-[17px] w-[377px] text-center border-[1px]">Venue Name
-                </p>
-                <p class="bg-[#EAE2FF] rounded-[10px] px-[34px] py-[17px] w-[377px] text-center border-[1px]">Venue Name
-                </p>
+            <div class="flex flex-wrap gap-[8px]" id="Venues_div">
+
+            </div>
+            <div class="flex flex-wrap gap-[8px]" id="date_div">
+
             </div>
 
             <p class="text-[24px] font-[400]">Select Showtime</p>
-            <div class="flex flex-wrap gap-[8px]">
-                <p class="bg-[#EAE2FF] rounded-[10px] px-[34px] py-[17px] w-[320px] text-center border-[1px]">10:30 AM
-                </p>
-                <p class="bg-[#EAE2FF] rounded-[10px] px-[34px] py-[17px] w-[320px] text-center border-[1px]">1:15 PM
-                </p>
-                <p class="bg-[#EAE2FF] rounded-[10px] px-[34px] py-[17px] w-[320px] text-center border-[1px]">4:00 PM
-                </p>
-                <p class="bg-[#EAE2FF] rounded-[10px] px-[34px] py-[17px] w-[320px] text-center border-[1px]">7:30 PM
-                </p>
+            <div class="flex flex-wrap gap-[8px]" id="show_time_div">
+
             </div>
 
             <p class="text-[24px] font-[400]">Select Seats</p>
@@ -94,28 +95,19 @@
                     Stage
                 </p>
                 <div class="w-[50%]">
-                    <div class="grid grid-cols-10 text-center gap-[5px]">
-                        <p class="p-[10px] bg-[#38026A] rounded-[6px] text-white ">A1</p>
-                        <p class="border-1 p-[10px]  rounded-[6px]">A2</p>
-                        <p class="border-1 p-[10px]  rounded-[6px]">A3</p>
-                        <p class="border-1 p-[10px]  rounded-[6px]">A4</p>
-                        <p class="border-1 p-[10px]  rounded-[6px]">A5</p>
-                        <p class="border-1 p-[10px]  rounded-[6px]">A6</p>
-                        <p class="border-1 p-[10px]  rounded-[6px]">A7</p>
-                        <p class="border-1 p-[10px]  rounded-[6px]">A8</p>
-                        <p class="border-1 p-[10px]  rounded-[6px]">A9</p>
-                        <p class="p-[10px] bg-[#38026A] text-white rounded-[6px]">A10</p>
+                    <div class="grid grid-cols-10 text-center gap-[5px] seat-grid">
+
                     </div>
                 </div>
             </div>
 
             <div class="flex justify-between px-[20px] py-[10px] bg-[#FAFAFA]">
                 <div>
-                    <p>Selected Seats: B3, B4</p>
-                    <p>Total: Rs.900.00</p>
+                    <p>Selected Seats: <span id="selected_seats">No Seats Selected</span></p>
+                    <p>Total: <span id="final_price">Rs.0.00</span></p>
                 </div>
-                <button
-                    class="bg-gradient-to-r from-[#0A0418] to-[#45006E] rounded-[10px] text-[white] py-[10px] px-[20px]">
+                <button id="payment-button"
+                    class="bg-gradient-to-r from-[#0A0418] to-[#45006E] rounded-[10px] text-[white] py-[10px] px-[20px] cursor-pointer">
                     Continue to Payment
                 </button>
             </div>

@@ -19,7 +19,6 @@ class CreateEventVenuesTable extends Migration
             $table->unsignedBigInteger('event_id');
             $table->unsignedBigInteger('location_id');
             $table->unsignedBigInteger('venue_id');
-            $table->integer('available_seats');
             $table->dateTime('start_datetime');
             $table->timestamps();
 
