@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["DOM", "ES2020"],                       
-    "module": "ES6",                       
-    "rootDir": "src/scripts",              
-    "outDir": "src/dist",                      
+    "lib": ["DOM", "ES2020"], 
+    "module": "ES6",
+    "rootDir": "src",
+    "outDir": "src/dist",                       
     "strict": true,                        
-    "esModuleInterop": true,               
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["src/scripts"]
+  "include": ["src/**/*.ts"]
 }

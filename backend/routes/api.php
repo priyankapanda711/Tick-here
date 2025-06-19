@@ -1,6 +1,11 @@
 <?php
 
 use App\Http\Controllers\EventCategoryController;
+use App\Http\Controllers\VerifyEmailController;
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
@@ -10,9 +15,11 @@ use App\Http\Controllers\VenueController;
 use App\Http\Controllers\EventVenuesController;
 use App\Http\Controllers\StripeController;
 
-// User registration & login
+// User registration, verification & login
 Route::post('/users', [UserController::class, 'store']);
 Route::post('/auth/user/login', [UserController::class, 'login']);
+Route::post('/email/resend', [UserController::class, 'resendVerificationEmail'])->middleware('auth:sanctum');
+
 
 // Admin registration & login
 Route::post('/admin', [AdminController::class, 'store']);
@@ -27,6 +34,25 @@ Route::get('/venues/{id}/seats', [VenueController::class, 'seats']);
 
 Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession']);
 
+// Verify email
+Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+    $user = User::findOrFail($id);
+
+    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        return response()->json(['message' => 'Invalid verification link'], 403);
+    }
+
+    if ($user->hasVerifiedEmail()) {
+        return redirect(env('FRONTEND_URL', 'http://localhost:8080') . '/verified');
+    }
+
+    $user->markEmailAsVerified();
+    event(new Verified($user));
+
+    return redirect(env('FRONTEND_URL', 'http://localhost:8080') . '/verified');
+})->middleware('signed')->name('verification.verify');
+
+
 /**
  * PROTECTED ROUTES
  * Require authentication using Sanctum
@@ -35,7 +61,8 @@ Route::post('/create-checkout-session', [StripeController::class, 'createCheckou
 /**
  * USER ROUTES
  */
-Route::middleware('auth:sanctum')->group(function () {
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/auth/user/logout', [UserController::class, 'logout']);
     Route::get('/auth/user/profile', [UserController::class, 'profile']);
     Route::put('/auth/user/profile', [UserController::class, 'update']);
@@ -44,7 +71,8 @@ Route::middleware('auth:sanctum')->group(function () {
 /**
  * ADMIN ROUTES
  */
-Route::middleware(['auth:sanctum'])->group(function () {
+
+Route::middleware(['auth:sanctum', 'admin', 'verified'])->group(function () {
     Route::post('/auth/admin/logout', [AdminController::class, 'logout']);
     Route::get('/auth/admin/profile', [AdminController::class, 'profile']);
     Route::put('/auth/admin/profile', [AdminController::class, 'update']);
