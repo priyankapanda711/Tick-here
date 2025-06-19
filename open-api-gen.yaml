@@ -7,17 +7,6 @@ info:
 servers:
   - url: http://localhost:8000/
 
-tags:
-  - name: Users
-  - name: Admins
-  - name: Events
-  - name: Locations
-  - name: Venues
-  - name: EventVenues
-  - name: Seats
-  - name: Tickets
-  - name: EventCategories
-
 paths:
   # authentication
   /auth/admin/login:

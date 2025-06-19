@@ -2,12 +2,13 @@
   "name": "frontend",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "live-server src",
     "watch": "tsc --watch",
     "build": "tsc",
-    "dev:css": "tailwindcss -i ./src/styles/input.css -o ./dist/output.css --watch"
+    "dev:css": "tailwindcss -i ./src/assets/styles/input.css -o ./src/assets/styles/output.css --watch"
   },
   "keywords": [],
   "author": "",
