@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventCategoryController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Models\User;
@@ -44,7 +43,7 @@ Route::post('/auth/admin/login', [AdminController::class, 'login']);
 // Public Event Data
 Route::get('/events/{event}', [EventController::class, 'getEvent']); // Get event details
 Route::get('/events/{event}/venues', [EventVenuesController::class, 'getVenuesByEvent']); // Venues for an event
-
+Route::get('/locations', [LocationController::class, 'index']);
 
 // Verify email
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
@@ -96,9 +95,9 @@ Route::middleware(['auth:sanctum', 'admin', 'verified'])->group(function () {
 
     // Locations
     Route::post('/admin/locations', [LocationController::class, 'create']);
-    Route::get('/admin/locations', [LocationController::class, 'index']);
     Route::delete('/admin/locations/{location}', [LocationController::class, 'delete']);
     Route::put('/admin/locations/{location}', [LocationController::class, 'update']);
+    Route::get('/admin/locations', [LocationController::class, 'index']);
 
     // Venues
     Route::post('/admin/venues', [VenueController::class, 'create']);
@@ -112,4 +111,3 @@ Route::middleware(['auth:sanctum', 'admin', 'verified'])->group(function () {
     Route::delete('/admin/categories/{category}', [EventCategoryController::class, 'delete']);
     Route::put('/admin/categories/{category}', [EventCategoryController::class, 'update']);
 });
-

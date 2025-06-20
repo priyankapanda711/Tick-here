@@ -1,6 +1,7 @@
 import { loadNavbar } from "./components/navbar/navbar.js";
 import { loadFooter } from "./components/footer/footer.js";
 import { loadContactModal } from "./components/contact-modal/contactModal.js";
+import { loadLocationModal } from "./components/location-modal/locationModal.js";
 
 declare const Swiper: any;
 
@@ -8,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadNavbar();
   loadFooter();
   loadContactModal();
+  loadLocationModal();
 
   // Get the "All Events" button by clicking on "see More >""
   const allEvents = document.getElementById("all-events");

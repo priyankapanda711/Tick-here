@@ -380,9 +380,17 @@ paths:
 
     get:
       summary: List all locations
-      tags: [Admin]
       security:
         - sanctum: []
+      tags: [Admin]
+      responses:
+        "200":
+          description: List of locations
+
+  /locations:
+    get:
+      summary: List all locations
+      tags: [User]
       responses:
         "200":
           description: List of locations
