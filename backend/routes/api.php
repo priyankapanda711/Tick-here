@@ -20,6 +20,10 @@ Route::post('/users', [UserController::class, 'store']);
 Route::post('/auth/user/login', [UserController::class, 'login']);
 Route::post('/email/resend', [UserController::class, 'resendVerificationEmail'])->middleware('auth:sanctum');
 
+// routes/api.php
+Route::post('/auth/user/change-password', [UserController::class, 'changePassword']);
+
+
 
 // Admin registration & login
 Route::post('/admin', [AdminController::class, 'store']);
@@ -62,10 +66,13 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) 
  * USER ROUTES
  */
 
+
+Route::post('/auth/user/profile', [UserController::class, 'profile']);
+Route::put('/auth/user/profile', [UserController::class, 'update']);
+
+
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/auth/user/logout', [UserController::class, 'logout']);
-    Route::get('/auth/user/profile', [UserController::class, 'profile']);
-    Route::put('/auth/user/profile', [UserController::class, 'update']);
 });
 
 /**
