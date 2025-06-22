@@ -1,4 +1,6 @@
-function getCountryFlag(country: string): string {
+import { loadEventsForLocation } from "../main.js";
+
+export function getCountryFlag(country: string): string {
   const flags: Record<string, string> = {
     India:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrIJbX-6MVfN4u1_xWs8A7eADfLg1lU9k7oA&s",
@@ -15,4 +17,23 @@ function getCountryFlag(country: string): string {
   return flags[country] || "🏳️";
 }
 
-export { getCountryFlag };
+interface Category {
+  id: number;
+  name: string;
+}
+
+// fetch the category data from backend
+export function fetchCategories(): Promise<Category[]> {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: "http://127.0.0.1:8000/api/categories",
+      method: "GET",
+      success: function (res: any) {
+        resolve(res.data); // array of strings
+      },
+      error: function (err) {
+        reject("Failed to fetch categories.");
+      },
+    });
+  });
+}

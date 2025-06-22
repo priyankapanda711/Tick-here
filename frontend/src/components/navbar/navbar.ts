@@ -65,8 +65,10 @@ export function loadNavbar(): void {
             let path = "";
 
             if (targetText.includes("home")) path = "/";
-            else if (targetText.includes("all events")) path = "/events";
-            else if (targetText.includes("my bookings")) path = "/bookings";
+            else if (targetText.includes("all events")) {
+              path = "/events";
+              sessionStorage.removeItem("selected");
+            } else if (targetText.includes("my bookings")) path = "/bookings";
 
             if (path) {
               window.location.href = path;

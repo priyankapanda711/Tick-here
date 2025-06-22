@@ -15,7 +15,7 @@ class CreateSeatsTable extends Migration
     {
         Schema::create('seats', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('event_venue_id'); // foreign key
+            $table->unsignedBigInteger('venue_id'); // foreign key
             $table->string('row_label');
             $table->integer('seat_no');
             $table->string('label');
@@ -23,9 +23,9 @@ class CreateSeatsTable extends Migration
             $table->boolean('is_booked')->default(false);
             $table->timestamps();
 
-            $table->foreign('event_venue_id')
+            $table->foreign('venue_id')
                   ->references('id')
-                  ->on('event_venues')
+                  ->on('venues')
                   ->onDelete('cascade');
         });
     }

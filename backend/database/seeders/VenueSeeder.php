@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Location;
+use App\Models\Venue;
+use App\Services\SeatGenerator;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -54,13 +56,17 @@ class VenueSeeder extends Seeder
             $location = Location::where('location_name', $locationName)->first();
 
             if ($location) {
-                foreach ($venueNames as $venue) {
-                    DB::table('venues')->insert([
-                        'venue_name' => $venue,
+                foreach ($venueNames as $venueName) {
+                    $maxSeats = rand(500, 2000);  // randomly pics a value for max_seats
+
+                    $venue = Venue::create([
+                        'venue_name' => $venueName,
                         'location_id' => $location->id,
-                        'created_at' => now(),
-                        'updated_at' => now(),
+                        'max_seats' => $maxSeats,
                     ]);
+
+                    // Generate seats for this venue
+                    SeatGenerator::generateSeats($venue->id, $maxSeats);
                 }
             }
         }

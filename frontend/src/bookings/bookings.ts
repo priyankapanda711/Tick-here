@@ -2,12 +2,14 @@ import { loadNavbar } from "../components/navbar/navbar.js";
 import { loadFooter } from "../components/footer/footer.js";
 import { loadContactModal } from "../components/contact-modal/contactModal.js";
 import { loadLocationModal } from "../components/location-modal/locationModal.js";
+import { renderTagCategories } from "../components/category/tagCategorySection.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   loadNavbar();
   loadFooter();
   loadContactModal();
   loadLocationModal();
+  renderTagCategories(".tag-category-grid");
 
   //filtering by category
 

@@ -277,7 +277,7 @@ paths:
         "204":
           description: Event deleted successfully
 
-  /events/{location}:
+  /events/locations/{location}:
     get:
       tags:
         - User - Events
@@ -321,9 +321,10 @@ paths:
         "201":
           description: Category created successfully
 
+  /categories:
     get:
       summary: Get all categories
-      tags: [Admin]
+      tags: [Admin, User]
       responses:
         "200": { description: Categories listed }
 

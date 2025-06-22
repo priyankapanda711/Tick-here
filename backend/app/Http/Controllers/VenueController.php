@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\venue;
+use App\Services\SeatGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -27,7 +28,7 @@ class VenueController extends Controller
             $data = request()->validate([
                 "venue_name" => "required",
                 "location_id" => ['required', Rule::exists('locations', 'id')],
-                "available_seats" => "required|min:2"
+                "max_seats" => "required|min:2"
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -38,10 +39,13 @@ class VenueController extends Controller
 
         $res = Venue::create($data);
 
+        // Auto-generate seats
+        SeatGenerator::generateSeats($res->id, $res->max_seats);
+
         if ($res) {
             return response()->json([
                 'success' => true,
-                'message' => "Venue Created"
+                'message' => "Venue and seats Created"
             ], 200);
         } else {
             return response()->json([

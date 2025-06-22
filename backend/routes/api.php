@@ -40,16 +40,18 @@ Route::post('/email/resend', [UserController::class, 'resendVerificationEmail'])
 Route::post('/admin', [AdminController::class, 'store']);
 Route::post('/auth/admin/login', [AdminController::class, 'login']);
 
-// Public Event Data
+// Public Data
 Route::get('/events/{event}', [EventController::class, 'getEvent']); // Get event details
 Route::get('/events/{event}/venues', [EventVenuesController::class, 'getVenuesByEvent']); // Venues for an event
-Route::get('/locations', [LocationController::class, 'index']);
+Route::get('/locations', [LocationController::class, 'index']); // Get all locations
+Route::get('/events/locations/{location}', [EventController::class, 'getEventsByLocation']); // all Events for a location
+Route::get('/categories', [EventCategoryController::class, 'index']);
 
 // Verify email
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
     $user = User::findOrFail($id);
 
-    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+    if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
         return response()->json(['message' => 'Invalid verification link'], 403);
     }
 
@@ -71,7 +73,7 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) 
 
 /**
  * USER ROUTES
-*/
+ */
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/auth/user/logout', [UserController::class, 'logout']);
     Route::get('/auth/user/profile', [UserController::class, 'profile']);
@@ -106,7 +108,6 @@ Route::middleware(['auth:sanctum', 'admin', 'verified'])->group(function () {
     Route::put('/admin/venues/{venue}', [VenueController::class, 'update']);
 
     //Categories
-    Route::post('/admin/categories', [EventCategoryController::class, 'index']);
     Route::post('/admin/categories', [EventCategoryController::class, 'create']);
     Route::delete('/admin/categories/{category}', [EventCategoryController::class, 'delete']);
     Route::put('/admin/categories/{category}', [EventCategoryController::class, 'update']);

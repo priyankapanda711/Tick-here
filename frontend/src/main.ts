@@ -1,15 +1,58 @@
 import { loadNavbar } from "./components/navbar/navbar.js";
 import { loadFooter } from "./components/footer/footer.js";
 import { loadContactModal } from "./components/contact-modal/contactModal.js";
-import { loadLocationModal } from "./components/location-modal/locationModal.js";
+import {
+  loadLocationModal,
+  showSelectedLocationInNavbar,
+} from "./components/location-modal/locationModal.js";
+import { createEventCard } from "./components/event-card/eventCard.js";
+import { renderHomeCategories } from "./components/category/homeCategorySection.js";
 
 declare const Swiper: any;
 
+//get the selected location and fetch events for that location
+export function loadEventsForLocation(): void {
+  const selected = sessionStorage.getItem("selectedLocation");
+  if (!selected) return;
+
+  const location = JSON.parse(selected);
+  console.log("Selected location:", location);
+
+  let url = `http://127.0.0.1:8000/api/events/locations/${location.id}`;
+
+  $.ajax({
+    url,
+    method: "GET",
+    success: async function (res: any) {
+      const container = $(".event-card-grid"); // Grid in your section
+      container.empty();
+
+      if (!res.data || res.data.length === 0) {
+        container.append(
+          `<p class="col-span-4 text-center text-gray-500">No events found.</p>`
+        );
+        return;
+      }
+
+      res.data.slice(0, 4).forEach(async (event: typeof res.data) => {
+        const cardHtml = await createEventCard(event);
+        container.append(cardHtml);
+      });
+    },
+    error: function () {
+      console.error("Failed to load events.");
+    },
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  loadEventsForLocation();
+  showSelectedLocationInNavbar();
+  loadLocationModal();
   loadNavbar();
   loadFooter();
   loadContactModal();
-  loadLocationModal();
+  renderHomeCategories(".home-category-grid");
 
   // Get the "All Events" button by clicking on "see More >""
   const allEvents = document.getElementById("all-events");

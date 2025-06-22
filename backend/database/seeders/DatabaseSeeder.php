@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             LocationSeeder::class,
             VenueSeeder::class,
-            EventCategorySeeder::class
+            EventCategorySeeder::class,
+            EventSeeder::class
         ]);
     }
 }
