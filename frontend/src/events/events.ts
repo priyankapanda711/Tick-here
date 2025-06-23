@@ -5,7 +5,24 @@ import { loadLocationModal } from "../components/location-modal/locationModal.js
 import { renderTagCategories } from "../components/category/tagCategorySection.js";
 import { createEventCard } from "../components/event-card/eventCard.js";
 
-function loadEventsForEventsPage(selectedCategories: string[] = []): void {
+// Linear search function for events by title
+function linearSearch(events: any[], searchTerm: string): any[] {
+  const results: any[] = [];
+
+  for (let i = 0; i < events.length; i++) {
+    const title = events[i].title.toLowerCase();
+    if (title.includes(searchTerm.toLowerCase())) {
+      results.push(events[i]);
+    }
+  }
+
+  return results;
+}
+
+function loadEventsForEventsPage(
+  selectedCategories: string[] = [],
+  searchTerm: string = ""
+): void {
   const selected = sessionStorage.getItem("selectedLocation");
   if (!selected) return;
 
@@ -24,19 +41,24 @@ function loadEventsForEventsPage(selectedCategories: string[] = []): void {
       allContainer.empty();
       upcomingContainer.empty();
 
+      // Apply category filter first
+      let filteredEvents = res.data.filter((event: any) => {
+        return (
+          selectedCategories.length === 0 ||
+          selectedCategories.includes(event.category)
+        );
+      });
+
+      // Apply linear search filter on event title
+      if (searchTerm.trim()) {
+        filteredEvents = linearSearch(filteredEvents, searchTerm);
+      }
+
       //to track the count of events
       let allEventsCount = 0;
       let upcomingEventsCount = 0;
 
-      for (const event of res.data) {
-        //if this event is not from the selected categories then skip this event, otherwise if no category is selected then render
-        if (
-          selectedCategories.length > 0 &&
-          !selectedCategories.includes(event.category)
-        ) {
-          continue; // skip if not in selected category
-        }
-
+      for (const event of filteredEvents) {
         const startDate = new Date(event.start_datetime);
         const cardHtml = await createEventCard(event);
 
@@ -93,6 +115,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const rawCategory = sessionStorage.getItem("selectedCategory");
     const fromHome = rawCategory ? JSON.parse(rawCategory) : null;
 
+    const searchInput = document.getElementById(
+      "search-input"
+    ) as HTMLInputElement;
+
+    let currentSearch = "";
+
+    console.log(searchInput);
+
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        currentSearch = searchInput.value;
+
+        console.log(currentSearch);
+
+        loadEventsForEventsPage(selectedCategories, currentSearch);
+      });
+    }
+
     if (fromHome && !selectedCategories.includes(fromHome)) {
       selectedCategories.push(fromHome);
       const url = new URL(window.location.href);
@@ -120,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         updateURL();
         applyActiveStyles();
-        loadEventsForEventsPage(selectedCategories);
+        loadEventsForEventsPage(selectedCategories, currentSearch);
       });
     });
 
@@ -148,6 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     applyActiveStyles();
-    loadEventsForEventsPage(selectedCategories);
+    loadEventsForEventsPage(selectedCategories, currentSearch);
   });
 });

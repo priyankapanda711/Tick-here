@@ -57,7 +57,7 @@ class EventSeeder extends Seeder
 
                     // creates all the random details for an event (testing purpose)
                     $title = Str::title(Str::random(10)) . " Live";
-                    $description = "Exciting event happening at {$venue->venue_name} in {$location->location_name}.";
+                    $description = "Exciting event happening at {$venue->venue_name} in {$location->city}.";
                     $duration = Carbon::createFromTime(rand(1, 3), rand(0, 59))->format('H:i:s');
 
 

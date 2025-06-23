@@ -53,7 +53,7 @@ class VenueSeeder extends Seeder
         ];
 
         foreach ($venues as $locationName => $venueNames) {
-            $location = Location::where('location_name', $locationName)->first();
+            $location = Location::where('city', $locationName)->first();
 
             if ($location) {
                 foreach ($venueNames as $venueName) {
