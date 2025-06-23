@@ -15,6 +15,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/jquery": "^3.5.32",
     "autoprefixer": "^10.4.21",
     "live-server": "^1.2.2",
     "postcss": "^8.5.4",

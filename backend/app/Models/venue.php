@@ -15,6 +15,8 @@ class Venue extends Model
     {
         return $this->hasMany(EventVenue::class);
     }
+    
+  // for getting price of a seat for an event (/events/locations/{location})
 
     public function seats()
     {

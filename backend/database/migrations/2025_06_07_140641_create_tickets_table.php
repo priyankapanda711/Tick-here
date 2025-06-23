@@ -19,7 +19,7 @@ class CreateTicketsTable extends Migration
         $table->unsignedBigInteger('event_venue_id');
         $table->string('ticket_code')->unique();
         $table->decimal('total_price', 10, 2);
-        $table->enum('status', ['booked', 'cancelled', 'waiting'])->default('booked');
+        $table->enum('status', ['booked', 'cancelled'])->default('booked');
         $table->timestamps();
 
         $table->foreign('user_id')
