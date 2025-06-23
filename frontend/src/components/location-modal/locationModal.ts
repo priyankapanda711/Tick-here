@@ -38,7 +38,7 @@ interface Location {
   id: number;
   country: string;
   state: string;
-  location_name: string;
+  city: string;
   flag: string;
 }
 
@@ -62,7 +62,7 @@ export function setupLocationLogic(): void {
         alt=""
         src="../../assets/images/Location.png"
       />
-      <div class="relative text-base">${loc.location_name}</div>
+      <div class="relative text-base">${loc.city}</div>
       <img
         class="w-[1.3rem] relative h-[1.125rem] overflow-hidden shrink-0"
         alt=""
@@ -81,7 +81,7 @@ export function setupLocationLogic(): void {
   searchInput.on("input", () => {
     const query = (searchInput.val() as string).toLowerCase();
     const filtered = locationArray.filter((loc) =>
-      loc.location_name.toLowerCase().includes(query)
+      loc.city.toLowerCase().includes(query)
     );
     renderLocationGrid(filtered); // render the filtered locations in the grid
   });
@@ -99,7 +99,7 @@ function loadLocations(): void {
         flag: getCountryFlag(loc.country), // gets the flag based on the country
       }));
 
-      enriched.sort((a, b) => a.location_name.localeCompare(b.location_name));
+      enriched.sort((a, b) => a.city.localeCompare(b.city));
       locationArray.push(...enriched);
       renderLocationGrid(locationArray);
     },
@@ -117,7 +117,7 @@ function renderLocationGrid(locations: Location[]): void {
   locations.forEach((loc) => {
     const div = $("<div></div>")
       .addClass("truncate cursor-pointer hover:text-purple-700")
-      .text(loc.location_name)
+      .text(loc.city)
       .attr("data-id", loc.id.toString())
       .on("click", () => {
         handleLocationSelect(loc);
@@ -138,7 +138,7 @@ function handleLocationSelect(loc: Location): void {
         alt=""
         src="../../assets/images/Location.png"
       />
-      <div class="relative text-base">${loc.location_name}</div>
+      <div class="relative text-base">${loc.city}</div>
       <img
         class="w-[1.3rem] relative h-[1.125rem] overflow-hidden shrink-0"
         alt=""
@@ -170,7 +170,7 @@ export function showSelectedLocationInNavbar(): void {
           alt=""
           src="../../assets/images/Location.png"
         />
-        <div class="relative text-base">${loc.location_name}</div>
+        <div class="relative text-base">${loc.city}</div>
         <img
           class="w-[1.3rem] relative h-[1.125rem] overflow-hidden shrink-0"
           alt=""

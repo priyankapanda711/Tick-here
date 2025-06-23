@@ -1,5 +1,3 @@
-import { loadEventsForLocation } from "../main.js";
-
 export function getCountryFlag(country: string): string {
   const flags: Record<string, string> = {
     India:

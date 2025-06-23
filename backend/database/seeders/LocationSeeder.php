@@ -18,44 +18,44 @@ class LocationSeeder extends Seeder
     {
         $locations = [
             // India
-            ['country' => 'India', 'state' => 'Odisha', 'location_name' => 'Bhubaneswar'],
-            ['country' => 'India', 'state' => 'Delhi', 'location_name' => 'New Delhi'],
-            ['country' => 'India', 'state' => 'Maharashtra', 'location_name' => 'Mumbai'],
-            ['country' => 'India', 'state' => 'Karnataka', 'location_name' => 'Bangalore'],
-            ['country' => 'India', 'state' => 'Tamil Nadu', 'location_name' => 'Chennai'],
+            ['country' => 'India', 'state' => 'Odisha', 'city' => 'Bhubaneswar'],
+            ['country' => 'India', 'state' => 'Delhi', 'city' => 'New Delhi'],
+            ['country' => 'India', 'state' => 'Maharashtra', 'city' => 'Mumbai'],
+            ['country' => 'India', 'state' => 'Karnataka', 'city' => 'Bangalore'],
+            ['country' => 'India', 'state' => 'Tamil Nadu', 'city' => 'Chennai'],
 
             // USA
-            ['country' => 'USA', 'state' => 'California', 'location_name' => 'Los Angeles'],
-            ['country' => 'USA', 'state' => 'New York', 'location_name' => 'New York City'],
-            ['country' => 'USA', 'state' => 'Illinois', 'location_name' => 'Chicago'],
-            ['country' => 'USA', 'state' => 'Texas', 'location_name' => 'Houston'],
-            ['country' => 'USA', 'state' => 'Nevada', 'location_name' => 'Las Vegas'],
+            ['country' => 'USA', 'state' => 'California', 'city' => 'Los Angeles'],
+            ['country' => 'USA', 'state' => 'New York', 'city' => 'New York City'],
+            ['country' => 'USA', 'state' => 'Illinois', 'city' => 'Chicago'],
+            ['country' => 'USA', 'state' => 'Texas', 'city' => 'Houston'],
+            ['country' => 'USA', 'state' => 'Nevada', 'city' => 'Las Vegas'],
 
             // UK
-            ['country' => 'United Kingdom', 'state' => 'England', 'location_name' => 'London'],
-            ['country' => 'United Kingdom', 'state' => 'Scotland', 'location_name' => 'Edinburgh'],
-            ['country' => 'United Kingdom', 'state' => 'Wales', 'location_name' => 'Cardiff'],
-            ['country' => 'United Kingdom', 'state' => 'Northern Ireland', 'location_name' => 'Belfast'],
+            ['country' => 'United Kingdom', 'state' => 'England', 'city' => 'London'],
+            ['country' => 'United Kingdom', 'state' => 'Scotland', 'city' => 'Edinburgh'],
+            ['country' => 'United Kingdom', 'state' => 'Wales', 'city' => 'Cardiff'],
+            ['country' => 'United Kingdom', 'state' => 'Northern Ireland', 'city' => 'Belfast'],
 
             // Canada
-            ['country' => 'Canada', 'state' => 'Ontario', 'location_name' => 'Toronto'],
-            ['country' => 'Canada', 'state' => 'British Columbia', 'location_name' => 'Vancouver'],
-            ['country' => 'Canada', 'state' => 'Quebec', 'location_name' => 'Montreal'],
-            ['country' => 'Canada', 'state' => 'Alberta', 'location_name' => 'Calgary'],
+            ['country' => 'Canada', 'state' => 'Ontario', 'city' => 'Toronto'],
+            ['country' => 'Canada', 'state' => 'British Columbia', 'city' => 'Vancouver'],
+            ['country' => 'Canada', 'state' => 'Quebec', 'city' => 'Montreal'],
+            ['country' => 'Canada', 'state' => 'Alberta', 'city' => 'Calgary'],
 
             // Australia
-            ['country' => 'Australia', 'state' => 'New South Wales', 'location_name' => 'Sydney'],
-            ['country' => 'Australia', 'state' => 'Victoria', 'location_name' => 'Melbourne'],
-            ['country' => 'Australia', 'state' => 'Queensland', 'location_name' => 'Brisbane'],
-            ['country' => 'Australia', 'state' => 'Western Australia', 'location_name' => 'Perth'],
+            ['country' => 'Australia', 'state' => 'New South Wales', 'city' => 'Sydney'],
+            ['country' => 'Australia', 'state' => 'Victoria', 'city' => 'Melbourne'],
+            ['country' => 'Australia', 'state' => 'Queensland', 'city' => 'Brisbane'],
+            ['country' => 'Australia', 'state' => 'Western Australia', 'city' => 'Perth'],
 
             // UAE
-            ['country' => 'UAE', 'state' => 'Dubai', 'location_name' => 'Dubai'],
-            ['country' => 'UAE', 'state' => 'Abu Dhabi', 'location_name' => 'Abu Dhabi'],
+            ['country' => 'UAE', 'state' => 'Dubai', 'city' => 'Dubai'],
+            ['country' => 'UAE', 'state' => 'Abu Dhabi', 'city' => 'Abu Dhabi'],
 
             // Japan
-            ['country' => 'Japan', 'state' => 'Tokyo', 'location_name' => 'Tokyo'],
-            ['country' => 'Japan', 'state' => 'Osaka', 'location_name' => 'Osaka'],
+            ['country' => 'Japan', 'state' => 'Tokyo', 'city' => 'Tokyo'],
+            ['country' => 'Japan', 'state' => 'Osaka', 'city' => 'Osaka'],
         ];
 
 
@@ -63,7 +63,7 @@ class LocationSeeder extends Seeder
             DB::table('locations')->insert([
                 'country' => $location['country'],
                 'state' => $location['state'],
-                'location_name' => $location['location_name'],
+                'city' => $location['city'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

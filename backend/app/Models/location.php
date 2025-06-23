@@ -10,13 +10,14 @@ class Location extends Model
     use HasFactory;
 
     protected $fillable = [
-        'location_name',
+        'city',
         'state',
         'country'
     ];
 
     //this is used to establish the relationship between location and event_venue table
-    public function eventVenues(){
+    public function eventVenues()
+    {
         return $this->hasMany(EventVenue::class);
     }
 }
