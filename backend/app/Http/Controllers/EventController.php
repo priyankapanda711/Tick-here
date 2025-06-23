@@ -25,9 +25,6 @@ class EventController extends Controller
     //get an event
     public function getEvent(Event $event)
     {
-        // Eager loading (gives the eventVenue details along with the event details)
-        $event = Event::with('eventVenue');
-
         return response()->json([
             'success' => true,
             'payload' => $event
@@ -42,7 +39,7 @@ class EventController extends Controller
                 'title' => 'required|string|max:255',
                 'description' => 'required|string|min:10',
                 'thumbnail' => 'required|image',
-                'duration' => 'required|integer',
+                'duration' => 'required',
                 'category_id' => 'required|integer|exists:event_categories,id',
                 'venues' => 'required|array',
                 'venues.*.location_id' => 'required|exists:locations,id',

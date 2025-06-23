@@ -31,10 +31,13 @@ button?.addEventListener("click", async function (e) {
 
     const result = await response.json();
     console.log("Login success:", result);
-
+    console.log(result.token);
+    
     // Example: redirect or store token
-    // localStorage.setItem('token', result.token);
-    // window.location.href = '/dashboard.html';
+    localStorage.setItem('auth-token', result.token);
+    localStorage.setItem('username', result.data.username);
+    window.location.href = '/';
+    
   } catch (error) {
     console.error("Network or server error:", error);
     alert("Something went wrong. Please try again.");

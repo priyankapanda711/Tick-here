@@ -24,9 +24,9 @@ class CreateSeatsTable extends Migration
             $table->timestamps();
 
             $table->foreign('venue_id')
-                  ->references('id')
-                  ->on('venues')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('venues')
+                ->onDelete('cascade');
         });
     }
 

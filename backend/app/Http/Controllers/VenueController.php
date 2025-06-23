@@ -56,7 +56,8 @@ class VenueController extends Controller
     }
 
     //delete a venue (admin)
-    public function delete(Venue $venue){
+    public function delete(Venue $venue)
+    {
         $res = $venue->delete();
 
         if ($res) {
@@ -73,26 +74,36 @@ class VenueController extends Controller
     }
 
     //update a venue (admin)
-    public function update(Request $request, Venue $venue){
+    public function update(Request $request, Venue $venue)
+    {
         if (!$venue) {
-                return response()->json([
-                        'success' => false,
-                        'message' => 'Venue not found.'
-                ], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Venue not found.'
+            ], 404);
         }
 
         $validated = $request->validate([
-                "venue_name" => "required",
-                "location_id" => ['required', 'integer', Rule::exists('locations', 'id')],
-                "available_seats" => "required|min:2"
+            "venue_name" => "required",
+            "location_id" => ['required', 'integer', Rule::exists('locations', 'id')],
+            "available_seats" => "required|min:2"
         ]);
 
         $venue->update($validated);
 
         return response()->json([
-                'success' => true,
-                'message' => 'Venue updated successfully.',
-                'data' => $venue
+            'success' => true,
+            'message' => 'Venue updated successfully.',
+            'data' => $venue
         ], 200);
+    }
+
+    public function seats($id)
+    {
+        $venue = Venue::with('seats')->findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'seats' => $venue->seats,
+        ]);
     }
 }
