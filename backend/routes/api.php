@@ -13,27 +13,16 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\VenueController;
 use App\Http\Controllers\EventVenuesController;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-/**
- * PUBLIC ROUTES
- * Accessible without authentication
- */
+use App\Http\Controllers\StripeController;
 
 // User registration, verification & login
 Route::post('/users', [UserController::class, 'store']);
 Route::post('/auth/user/login', [UserController::class, 'login']);
 Route::post('/email/resend', [UserController::class, 'resendVerificationEmail'])->middleware('auth:sanctum');
+
+// routes/api.php
+Route::post('/auth/user/change-password', [UserController::class, 'changePassword']);
+
 
 
 // Admin registration & login
@@ -44,6 +33,10 @@ Route::post('/auth/admin/login', [AdminController::class, 'login']);
 Route::get('/events/{event}', [EventController::class, 'getEvent']); // Get event details
 Route::get('/events/{event}/venues', [EventVenuesController::class, 'getVenuesByEvent']); // Venues for an event
 
+// Seats data
+Route::get('/venues/{id}/seats', [VenueController::class, 'seats']);
+
+Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession']);
 
 // Verify email
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
@@ -71,16 +64,21 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) 
 
 /**
  * USER ROUTES
-*/
+ */
+
+
+Route::post('/auth/user/profile', [UserController::class, 'profile']);
+Route::put('/auth/user/profile', [UserController::class, 'update']);
+
+
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/auth/user/logout', [UserController::class, 'logout']);
-    Route::get('/auth/user/profile', [UserController::class, 'profile']);
-    Route::put('/auth/user/profile', [UserController::class, 'update']);
 });
 
 /**
  * ADMIN ROUTES
  */
+
 Route::middleware(['auth:sanctum', 'admin', 'verified'])->group(function () {
     Route::post('/auth/admin/logout', [AdminController::class, 'logout']);
     Route::get('/auth/admin/profile', [AdminController::class, 'profile']);

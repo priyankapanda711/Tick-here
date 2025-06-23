@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+  
 
   //carousel logic
   const swiper: any = new Swiper(".swiper", {
