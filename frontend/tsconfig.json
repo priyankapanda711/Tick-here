@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES2016",
-    "lib": ["DOM", "ES2016"],
+    "target": "ES2017",
+    "lib": ["DOM", "ES2020"], 
     "module": "ES6",
-    "moduleResolution": "Bundler",
     "rootDir": "src",
-    "outDir": "src/dist",
-    "strict": true,
+    "outDir": "src/dist",                       
+    "strict": true,                        
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
