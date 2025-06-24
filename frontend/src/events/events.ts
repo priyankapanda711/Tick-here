@@ -71,6 +71,13 @@ function loadEventsForEventsPage(
         }
       }
 
+      // navigates to the event details page
+      $(".event-card").on("click", function () {
+        const eventId = $(this).data("event-id");
+
+        window.location.href = `details/?event=${eventId}`;
+      });
+
       // If no events matched
       if (allEventsCount === 0) {
         allContainer.append(`
@@ -121,13 +128,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let currentSearch = "";
 
-    console.log(searchInput);
-
     if (searchInput) {
       searchInput.addEventListener("input", () => {
         currentSearch = searchInput.value;
-
-        console.log(currentSearch);
 
         loadEventsForEventsPage(selectedCategories, currentSearch);
       });

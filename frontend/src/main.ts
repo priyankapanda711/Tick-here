@@ -24,7 +24,7 @@ export function loadEventsForLocation(): void {
     url,
     method: "GET",
     success: async function (res: any) {
-      const container = $(".event-card-grid"); // Grid in your section
+      const container = $(".event-card-grid");
       container.empty();
 
       if (!res.data || res.data.length === 0) {
@@ -34,9 +34,18 @@ export function loadEventsForLocation(): void {
         return;
       }
 
-      res.data.slice(0, 4).forEach(async (event: typeof res.data) => {
+      // Wait for all cards to render first
+      for (const event of res.data.slice(0, 4)) {
         const cardHtml = await createEventCard(event);
         container.append(cardHtml);
+      }
+
+      $(".event-card").on("click", function () {
+        const eventId = $(this).data("event-id");
+
+        console.log("Clicked Event ID:", eventId);
+
+        window.location.href = `/events/details/?event=${eventId}`;
       });
     },
     error: function () {
@@ -72,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  
 
   //carousel logic
   const swiper: any = new Swiper(".swiper", {
