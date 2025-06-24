@@ -19,14 +19,14 @@ class Event extends Model
     ];
 
     // Automatically load eventVenue and its nested venue & location
-    protected $with = ['eventVenue', 'eventCategory'];
+    protected $with = ['eventVenue', 'category'];
 
     public function eventVenue()
     {
         return $this->hasMany(EventVenue::class);
     }
-    public function eventCategory()
+    public function category()
     {
-        return $this->belongsTo(EventCategory::class, 'category_id', 'id');
+        return $this->belongsTo(EventCategory::class, 'category_id', );
     }
 }

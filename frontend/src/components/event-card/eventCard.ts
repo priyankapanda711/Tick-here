@@ -7,6 +7,7 @@ export async function createEventCard(event: any): Promise<string> {
   const month = date.toLocaleString("default", { month: "short" });
 
   return template
+    .replace(/{{EVENT_ID}}/g, event.id) // Inject ID for click handling
     .replace(/{{THUMBNAIL}}/g, event.thumbnail || "./assets/images/event.jpg")
     .replace(/{{TITLE}}/g, event.title)
     .replace(/{{CATEGORY}}/g, event.category)
