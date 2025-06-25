@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="../assets/styles/output.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap"
+    />
+    <link href="../assets/styles/output.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="navbar"></div>
+
+    <main class="px-[278px] py-6 space-y-[28px]">
+
+      <div id="location-form"></div>
+      <!-- Cards Grid -->
+      <section
+        class="grid grid-cols-3 gap-x-[32px] gap-y-[18px] items-start justify-items-center">
+        <div class="w-full max-w-[300px] bg-white rounded-lg shadow p-[16px] text-left">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-lg font-semibold">Comedy</span>
+            <span class="text-sm text-gray-600">3 Active Events</span>
+          </div>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-4xl font-bold">150</span>
+            <span class="text-sm text-green-500">30% ↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+
+        <div class="w-full max-w-[300px] bg-white rounded-lg shadow p-[16px] text-left">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-lg font-semibold">Kids</span>
+            <span class="text-sm text-gray-600">3 Active Events</span>
+          </div>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-4xl font-bold">150</span>
+            <span class="text-sm text-green-500">30% ↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+
+          <div class="w-full max-w-[300px] bg-white rounded-lg shadow p-[16px] text-left">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-lg font-semibold">Music</span>
+            <span class="text-sm text-gray-600">3 Active Events</span>
+          </div>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-4xl font-bold">150</span>
+            <span class="text-sm text-green-500">30% ↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+
+          <div class="w-full max-w-[300px] bg-white rounded-lg shadow p-[16px] text-left">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-lg font-semibold">Workshop</span>
+            <span class="text-sm text-gray-600">3 Active Events</span>
+          </div>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-4xl font-bold">150</span>
+            <span class="text-sm text-green-500">30% ↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+
+          <div class="w-full max-w-[300px] bg-white rounded-lg shadow p-[16px] text-left">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-lg font-semibold">Peformance</span>
+            <span class="text-sm text-gray-600">3 Active Events</span>
+          </div>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-4xl font-bold">150</span>
+            <span class="text-sm text-green-500">30% ↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+
+          <div class="w-full max-w-[300px] bg-white rounded-lg shadow p-[16px] text-left">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-lg font-semibold">Sports Event</span>
+            <span class="text-sm text-gray-600">3 Active Events</span>
+          </div>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-4xl font-bold">150</span>
+            <span class="text-sm text-green-500">30% ↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+      </section>
+      <!-- Buttons -->
+      <div class="flex justify-center gap-[243px]">
+        <button
+          class="border border-purple-400 rounded-lg hover:bg-[#45006E] hover:text-[#F8F8FF]"
+          style="width: 150px; height: 42px;" id="addEventButton"
+        >
+          Add New Event
+        </button>
+        <button
+          class="border border-purple-400 rounded-lg hover:bg-[#45006E] hover:text-[#F8F8FF]"
+          style="width: 150px; height: 42px;" id="manageEventButton"
+        >
+          Manage Event
+        </button>
+      </div>
+      <!-- Charts -->
+       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-6">
+            Event Categories Overview
+          </h2>
+          <div class="chart-container">
+             <div id="myChart" class="bg-white p-6 rounded-lg shadow w-full"></div>
+          </div>
+        </div>
+      </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script type="module" src="../dist/Admin/main.js"></script>
+    
+</body>
+</html>

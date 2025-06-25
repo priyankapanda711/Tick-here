@@ -15,14 +15,16 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/chart.js": "^2.9.41",
     "autoprefixer": "^10.4.21",
     "live-server": "^1.2.2",
     "postcss": "^8.5.4",
-    "tailwindcss": "^4.1.8",
+    "tailwindcss": "^4.1.10",
     "typescript": "^5.8.3"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.8",
-    "axios": "^1.9.0"
+    "axios": "^1.9.0",
+    "chart.js": "^4.5.0"
   }
 }

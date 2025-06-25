@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Event</title>
+  <link rel="stylesheet" href="../../assets/styles/output.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap"/>
+</head>
+<body class="bg-[#F8F8FF] font-poppins">
+  <div id="navbar"></div>
+  <main class="px-[278px] py-6">
+    <section class="w-full max-w-[850px] bg-white border border-gray-300 rounded-lg p-8 grid grid-cols-2 gap-x-6 gap-y-4 shadow">
+
+      <!-- Title -->
+      <div class="col-span-1">
+        <label class="block text-sm font-medium mb-1" for="title">Title</label>
+        <input type="text" id="title" placeholder="Event Name" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500" />
+      </div>
+
+      <!-- Image Upload -->
+      <div class="col-span-1 row-span-4 border-2 border-dashed border-gray-300 flex flex-col items-center justify-center rounded-md text-center px-4 py-6">
+        <i class="fa-solid fa-image text-3xl text-gray-400 mb-2"></i>
+        <p class="text-sm text-gray-500">Drop here to attach or <a href="#" class="text-blue-500 underline">upload</a></p>
+      </div>
+
+      <!-- Description -->
+      <div class="col-span-1">
+        <label class="block text-sm font-medium mb-1" for="description">Description</label>
+        <textarea id="description" rows="3" placeholder="Input Description" class="w-full border border-gray-300 rounded-md px-4 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-purple-500"></textarea>
+      </div>
+
+      <!-- Category -->
+      <div class="col-span-1">
+        <label class="block text-sm font-medium mb-1" for="category">Category</label>
+        <select id="category" class="w-full border border-gray-300 rounded-md px-4 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-purple-500">
+          <option>Select Category</option>
+          <option>Comedy</option>
+          <option>Music</option>
+          <option>Sports</option>
+        </select>
+      </div>
+
+      <!-- Duration -->
+      <div>
+        <label class="block text-sm font-medium mb-1" for="duration">Duration (Hrs)</label>
+        <input type="number" id="duration" min="1" max="10" value="1" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500"/>
+      </div>
+
+      <!-- Ticket Price
+      <div class="col-span-1">
+        <label class="block text-sm font-medium mb-1" for="ticket-price">Ticket Price</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+          <input type="number" id="ticket-price" min="0" placeholder="Enter Price" class="w-full pl-8 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500"/>
+        </div>
+      </div> -->
+
+  
+      <!-- Venue Block -->
+      <div id="venueBlock" class="col-span-2 border border-gray-300 rounded-md p-4 mt-4 hidden bg-white shadow-sm relative">
+        <button id="closeVenueBtn" class="absolute top-2 right-2 text-gray-500 hover:text-red-500" title="Close">✕</button>
+        <label class="block text-sm font-medium mb-1" for="venue">Venue</label>
+        <select id="venue" class="w-full border border-gray-300 rounded-md px-4 py-2 mb-4 bg-white focus:outline-none focus:ring-1 focus:ring-purple-500">
+          <option>Select</option>
+          <option>Venue A</option>
+          <option>Venue B</option>
+        </select>
+        <div class="grid grid-cols-2 gap-x-4">
+          <div>
+            <label class="block text-sm font-medium mb-1" for="to-date">To</label>
+            <input type="date" id="to-date" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1" for="time">Time</label>
+            <input type="time" id="time" value="09:00" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500"/>
+          </div>
+        </div>
+      </div>
+
+          <!-- Add Venue Button -->
+      <div class="col-span-2 mt-2 relative">
+        <button id="toggleVenueBtn" class="w-full flex items-center justify-between border border-purple-500 px-4 py-2 rounded-md hover:bg-purple-600 hover:text-white transition duration-200">
+          <span>Add Venue</span>
+          <span class="text-lg font-bold">+</span>
+        </button>
+      </div>
+
+
+      <!-- Saved Venue Cards -->
+      <div id="savedVenuesList" class="col-span-2 mt-4 space-y-4"></div>
+
+      <!-- Final Buttons -->
+      <div class="col-span-2 flex justify-center gap-6 mt-">
+        <button class="border border-gray-400 px-6 py-2 rounded-md">Cancel</button>
+        <button id="submitFormBtn" class="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700">Create</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../../dist/Admin/create_event/create.js"></script>
+</body>
+</html>
