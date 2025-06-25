@@ -1,13 +1,89 @@
 import { loadNavbar } from "./components/navbar/navbar.js";
 import { loadFooter } from "./components/footer/footer.js";
 import { loadContactModal } from "./components/contact-modal/contactModal.js";
+import {
+  loadLocationModal,
+  showSelectedLocationInNavbar,
+} from "./components/location-modal/locationModal.js";
+import { createEventCard } from "./components/event-card/eventCard.js";
+import { renderHomeCategories } from "./components/category/homeCategorySection.js";
 
 declare const Swiper: any;
 
+//get the selected location and fetch events for that location
+export function loadEventsForLocation(): void {
+  const selected = sessionStorage.getItem("selectedLocation");
+  if (!selected) return;
+
+  const location = JSON.parse(selected);
+  console.log("Selected location:", location);
+
+  let url = `http://127.0.0.1:8000/api/events/locations/${location.id}`;
+
+  $.ajax({
+    url,
+    method: "GET",
+    success: async function (res: any) {
+      const container = $(".event-card-grid");
+      container.empty();
+
+      if (!res.data || res.data.length === 0) {
+        container.append(
+          `<p class="col-span-4 text-center text-gray-500">No events found.</p>`
+        );
+        return;
+      }
+
+      const now = new Date();
+      const oneMonthLater = new Date();
+      oneMonthLater.setMonth(now.getMonth() + 1);
+
+      let displayedCount = 0;
+
+      for (const event of res.data) {
+        const startDate = new Date(event.start_datetime);
+        const status = startDate > oneMonthLater ? "upcoming" : "ongoing";
+
+        // Show only the first 4 ongoing events
+        if (status === "ongoing" && displayedCount < 4) {
+          const cardHtml = await createEventCard(event, status);
+          container.append(cardHtml);
+          displayedCount++;
+        }
+
+        if (displayedCount >= 4) break;
+      }
+
+      if (displayedCount === 0) {
+        container.append(
+          `<p class="col-span-4 text-center text-gray-500">No ongoing events found.</p>`
+        );
+      }
+
+      $(".event-card").on("click", function () {
+        const eventId = $(this).data("event-id");
+
+        const status = $(this).data("status");
+
+        if (status === "ongoing") {
+          window.location.href = `/events/details/?event=${eventId}`;
+        }
+      });
+    },
+    error: function () {
+      console.error("Failed to load events.");
+    },
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  loadEventsForLocation();
+  showSelectedLocationInNavbar();
+  loadLocationModal();
   loadNavbar();
   loadFooter();
   loadContactModal();
+  renderHomeCategories(".home-category-grid");
 
   // Get the "All Events" button by clicking on "see More >""
   const allEvents = document.getElementById("all-events");

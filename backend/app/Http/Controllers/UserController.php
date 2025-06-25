@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
-use Throwable;
 
 class UserController extends Controller
 {
@@ -24,6 +23,8 @@ class UserController extends Controller
         }
 
         $user = User::where('email', $data['email'])->first();
+
+        auth()->login($user);
 
         if (!$user || ! Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages(['email' => ['Invalid credentials']]);
@@ -42,7 +43,7 @@ class UserController extends Controller
     {
         try {
             $data = request()->validate([
-                'name' => 'required|min:8',
+                'name' => 'required',
                 'email' => ['required', 'email', Rule::unique('users', 'email')],
                 'password' => 'required|min:8'
             ]);
@@ -67,15 +68,15 @@ class UserController extends Controller
 
     //For Resending verification email
     public function resendVerificationEmail(Request $request)
-{
-    if ($request->user()->hasVerifiedEmail()) {
-        return response()->json(['message' => 'Email already verified.'], 400);
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Email already verified.'], 400);
+        }
+
+        $request->user()->sendEmailVerificationNotification();
+
+        return response()->json(['message' => 'Verification email resent.']);
     }
-
-    $request->user()->sendEmailVerificationNotification();
-
-    return response()->json(['message' => 'Verification email resent.']);
-}
 
     //For logging out a user
     public function logout(Request $request)
@@ -85,36 +86,68 @@ class UserController extends Controller
     }
 
     //For getting current user profile
-    public function profile(Request $request)
+    public function profile()
     {
+        try {
+            $data = request()->validate([
+                'username' => ['required', Rule::exists('users', 'username')]
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'error' => $e->errors()
+            ]);
+        }
+
+        $user = User::where('username', $data['username'])->first();
         return response()->json([
-            'user' => $request->user()
+            'user' => $user
         ], 200);
     }
 
     //For updating user profile
     public function update(Request $request)
     {
-        try {
-            $user = $request->user();
+        $request->validate([
+            'username' => 'required|exists:users,username',
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'phone' => 'nullable|string',
+            'new_username' => 'required|string'
+        ]);
 
-            $data = request()->validate([
-                'name' => 'required|min:8',
-                'username' => ['required', 'min:8', Rule::unique('users', 'username')->ignore($request->user()->id)],
-                'phone' => ['required', 'digits:10', Rule::unique('users', 'phone')->ignore($request->user()->id)],
-                'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($request->user()->id)],
-                'password' => 'required|min:8',
-            ]);
+        $user = User::where('username', $request->username)->first();
 
-            if (isset($data['password'])) {
-                $data['password'] = Hash::make($data['password']);
-            }
-
-            $user->update($data);
-
-            return response()->json(['message' => 'Profile updated']);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
         }
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->username = $request->new_username;
+        $user->save();
+
+        return response()->json(['message' => 'Profile updated successfully']);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:6',
+            'confirm_password' => 'required|string|same:new_password',
+        ]);
+
+        $user = User::where('username', $request->username)->first();
+
+        if (!$user || !Hash::check($request->current_password, $user->password)) {
+            return response()->json(['message' => 'Current password is incorrect'], 403);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json(['message' => 'Password updated successfully']);
     }
 }
