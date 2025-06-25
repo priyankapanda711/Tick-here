@@ -8,4 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket extends Model
 {
     use HasFactory;
+
+    public function eventVenue()
+    {
+        return $this->belongsTo(EventVenue::class);
+    }
+
+    public function event()
+    {
+        return $this->eventVenue->event;
+    }
+
+
+
 }

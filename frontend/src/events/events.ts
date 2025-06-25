@@ -58,15 +58,23 @@ function loadEventsForEventsPage(
       let allEventsCount = 0;
       let upcomingEventsCount = 0;
 
+      const now = new Date();
+      const oneMonthLater = new Date();
+      oneMonthLater.setMonth(now.getMonth() + 1);
+
       for (const event of filteredEvents) {
         const startDate = new Date(event.start_datetime);
-        const cardHtml = await createEventCard(event);
 
-        allContainer.append(cardHtml); // show in "All Events"
+        const status = startDate > oneMonthLater ? "upcoming" : "ongoing";
+
+        const cardHtml = await createEventCard(event, status);
+
+        allContainer.append(cardHtml); // Always show in "All Events"
         allEventsCount++;
 
-        if (startDate > now) {
-          upcomingContainer.append(cardHtml); // show in "Upcoming" if it's in future
+        // Show in "Upcoming" only if it's more than 1 month from now
+        if (startDate > oneMonthLater) {
+          upcomingContainer.append(cardHtml);
           upcomingEventsCount++;
         }
       }
@@ -75,7 +83,11 @@ function loadEventsForEventsPage(
       $(".event-card").on("click", function () {
         const eventId = $(this).data("event-id");
 
-        window.location.href = `details/?event=${eventId}`;
+        const status = $(this).data("status");
+
+        if (status === "ongoing") {
+          window.location.href = `details/?event=${eventId}`;
+        }
       });
 
       // If no events matched

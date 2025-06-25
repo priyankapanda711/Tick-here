@@ -58,6 +58,7 @@ class VenueSeeder extends Seeder
             if ($location) {
                 foreach ($venueNames as $venueName) {
                     $maxSeats = rand(500, 2000);  // randomly pics a value for max_seats
+                    $price = rand(500, 5000);
 
                     $venue = Venue::create([
                         'venue_name' => $venueName,
@@ -66,7 +67,7 @@ class VenueSeeder extends Seeder
                     ]);
 
                     // Generate seats for this venue
-                    SeatGenerator::generateSeats($venue->id, $maxSeats);
+                    SeatGenerator::generateSeats($venue->id, $maxSeats, $price);
                 }
             }
         }

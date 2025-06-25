@@ -34,18 +34,40 @@ export function loadEventsForLocation(): void {
         return;
       }
 
-      // Wait for all cards to render first
-      for (const event of res.data.slice(0, 4)) {
-        const cardHtml = await createEventCard(event);
-        container.append(cardHtml);
+      const now = new Date();
+      const oneMonthLater = new Date();
+      oneMonthLater.setMonth(now.getMonth() + 1);
+
+      let displayedCount = 0;
+
+      for (const event of res.data) {
+        const startDate = new Date(event.start_datetime);
+        const status = startDate > oneMonthLater ? "upcoming" : "ongoing";
+
+        // Show only the first 4 ongoing events
+        if (status === "ongoing" && displayedCount < 4) {
+          const cardHtml = await createEventCard(event, status);
+          container.append(cardHtml);
+          displayedCount++;
+        }
+
+        if (displayedCount >= 4) break;
+      }
+
+      if (displayedCount === 0) {
+        container.append(
+          `<p class="col-span-4 text-center text-gray-500">No ongoing events found.</p>`
+        );
       }
 
       $(".event-card").on("click", function () {
         const eventId = $(this).data("event-id");
 
-        console.log("Clicked Event ID:", eventId);
+        const status = $(this).data("status");
 
-        window.location.href = `/events/details/?event=${eventId}`;
+        if (status === "ongoing") {
+          window.location.href = `/events/details/?event=${eventId}`;
+        }
       });
     },
     error: function () {

@@ -7,7 +7,7 @@ use App\Models\Seat;
 class SeatGenerator
 {
     // it generates the seat label and price for each row
-    public static function generateSeats(int $venueId, int $maxSeats): void
+    public static function generateSeats(int $venueId, int $maxSeats, int $price): void
     {
         $seatsPerRow = $maxSeats > 1040 ? 25 : 20; //no. of seats per row
         $totalRows = ceil($maxSeats / $seatsPerRow); //no. of rows
@@ -17,7 +17,6 @@ class SeatGenerator
 
         for ($i = 0; $i < $totalRows; $i++) { // this loop for each row
             $rowLabel = self::numberToAlphabet($i); //returns A or B or ... AA, AB ...
-            $price = self::getPriceForRow($rowLabel); //returns A-D -> 1000, E-H -> 800 like...
 
             for ($j = 1; $j <= $seatsPerRow && $seatCounter <= $maxSeats; $j++, $seatCounter++) { //this loop for each column (seat)
 
@@ -52,16 +51,5 @@ class SeatGenerator
         return $alphabet;
     }
 
-    private static function getPriceForRow(string $rowLabel): float
-    {
-        $premiumRows = ['A', 'B', 'C', 'D'];
-        $goldRows = ['E', 'F', 'G', 'H'];
-        $silverRows = ['I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'];
 
-        if (in_array($rowLabel, $premiumRows)) return 1000.00;
-        if (in_array($rowLabel, $goldRows)) return 800.00;
-        if (in_array($rowLabel, $silverRows)) return 600.00;
-
-        return 400.00; // Default/Back rows
-    }
 }

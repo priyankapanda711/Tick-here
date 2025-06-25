@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\EventCategoryController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Models\User;
@@ -20,11 +21,6 @@ Route::post('/users', [UserController::class, 'store']);
 Route::post('/auth/user/login', [UserController::class, 'login']);
 Route::post('/email/resend', [UserController::class, 'resendVerificationEmail'])->middleware('auth:sanctum');
 
-// routes/api.php
-Route::post('/auth/user/change-password', [UserController::class, 'changePassword']);
-
-
-
 // Admin registration & login
 Route::post('/admin', [AdminController::class, 'store']);
 Route::post('/auth/admin/login', [AdminController::class, 'login']);
@@ -41,7 +37,7 @@ Route::get('/categories', [EventCategoryController::class, 'index']);
 // Seats data
 Route::get('/venues/{id}/seats', [VenueController::class, 'seats']);
 
-Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession']);
+
 
 
 // Verify email
@@ -72,11 +68,15 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) 
  * USER ROUTES
  */
 
-Route::post('/auth/user/profile', [UserController::class, 'profile']);
-Route::put('/auth/user/profile', [UserController::class, 'update']);
+
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::post('/auth/user/profile', [UserController::class, 'profile']);
+    Route::put('/auth/user/profile', [UserController::class, 'update']);
     Route::post('/auth/user/logout', [UserController::class, 'logout']);
+    Route::post('/auth/user/change-password', [UserController::class, 'changePassword']);
+
+    Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession']);
 });
 
 /**
@@ -87,6 +87,11 @@ Route::middleware(['auth:sanctum', 'admin', 'verified'])->group(function () {
     Route::post('/auth/admin/logout', [AdminController::class, 'logout']);
     Route::get('/auth/admin/profile', [AdminController::class, 'profile']);
     Route::put('/auth/admin/profile', [AdminController::class, 'update']);
+
+    Route::prefix('admin/dashboard')->group(function () {
+        Route::get('/event-stats', [AdminDashboardController::class, 'getEventStats']);
+        Route::get('/ticket-stats', [AdminDashboardController::class, 'getTicketStats']);
+    });
 
     // Events
     Route::post('/', [EventController::class, 'index']); // Get all events
