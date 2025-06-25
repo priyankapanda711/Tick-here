@@ -249,11 +249,11 @@ if (event_Id) {
         fetchAndRenderSeats(selectedVenueId);
       }
 
-      const imagePath = `http://127.0.0.1:8000/storage/${event.thumbnail}`;
+      const imagePath = `http://127.0.0.1:8000/storage/thumbnails/${event.thumbnail}`;
       const thumbnail = document.getElementById(
         "event-thumbnail"
       ) as HTMLImageElement;
-      thumbnail.src = event.thumbnail;
+      thumbnail.src = imagePath;
       thumbnail.alt = event.title;
     })
     .catch((err) => {

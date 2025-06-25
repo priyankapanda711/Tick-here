@@ -28,7 +28,8 @@ class VenueController extends Controller
             $data = request()->validate([
                 "venue_name" => "required",
                 "location_id" => ['required', Rule::exists('locations', 'id')],
-                "max_seats" => "required|min:2"
+                "max_seats" => "required|min:2",
+                "price" => "required",
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -37,10 +38,14 @@ class VenueController extends Controller
             ], 404);
         }
 
-        $res = Venue::create($data);
+        $res = Venue::create([
+            "venue_name" => $data['venue_name'],
+            "location_id" => $data['location_id'],
+            "max_seats" => $data['max_seats']
+        ]);
 
         // Auto-generate seats
-        SeatGenerator::generateSeats($res->id, $res->max_seats);
+        SeatGenerator::generateSeats($res->id, $res->max_seats, $data['price']);
 
         if ($res) {
             return response()->json([
