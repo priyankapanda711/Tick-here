@@ -51,15 +51,19 @@ class AdminController extends Controller
 
         $admin = Admin::where('email', $data['email'])->first();
 
-        if (!$admin || ! Hash::check($data['password'], $admin->password)) {
+        if (!$admin || !Hash::check($data['password'], $admin->password)) {
             throw ValidationException::withMessages(['email' => ['Invalid credentials']]);
-        } else {
-            return response()->json([
-                'success' => true,
-                'message' => 'Authentication Successful',
-                'data' => $admin
-            ], 200);
         }
+
+        // Create a Sanctum token
+        $token = $admin->createToken('admin-token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Authentication Successful',
+            'token' => $token,
+            'data' => $admin
+        ]);
     }
 
     //For logging out an admin(who is also a user)
