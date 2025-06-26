@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eventix</title>
+
+    <link rel="stylesheet" href="../assets/styles/global.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap"
+    />
+    <link href="../assets/styles/output.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="navbar"></div>
+
+    <main>
+      <!-- Dashboard Cards -->
+      <div
+        class="max-w-6xl mx-auto mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        <!-- Single Card (Repeat this block 6 times or use a loop if using JS) -->
+        <div class="bg-white shadow-md rounded-2xl p-6 text-center">
+          <h2 class="text-lg font-semibold text-gray-700">Comedy</h2>
+          <p class="text-sm text-gray-500">3 500 Events</p>
+          <div class="mt-4 text-4xl font-bold text-gray-800">150</div>
+          <div
+            class="flex justify-center items-center gap-1 text-green-500 text-sm mt-1"
+          >
+            <span>30%</span>
+            <span>↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+
+        <!-- Copy the card above 5 more times -->
+        <div class="bg-white shadow-md rounded-2xl p-6 text-center">
+          <h2 class="text-lg font-semibold text-gray-700">Comedy</h2>
+          <p class="text-sm text-gray-500">3 500 Events</p>
+          <div class="mt-4 text-4xl font-bold text-gray-800">150</div>
+          <div
+            class="flex justify-center items-center gap-1 text-green-500 text-sm mt-1"
+          >
+            <span>30%</span>
+            <span>↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+
+        <!-- Repeat until you have 6 cards -->
+        <div class="bg-white shadow-md rounded-2xl p-6 text-center">
+          <h2 class="text-lg font-semibold text-gray-700">Comedy</h2>
+          <p class="text-sm text-gray-500">3 500 Events</p>
+          <div class="mt-4 text-4xl font-bold text-gray-800">150</div>
+          <div
+            class="flex justify-center items-center gap-1 text-green-500 text-sm mt-1"
+          >
+            <span>30%</span>
+            <span>↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+
+        <div class="bg-white shadow-md rounded-2xl p-6 text-center">
+          <h2 class="text-lg font-semibold text-gray-700">Comedy</h2>
+          <p class="text-sm text-gray-500">3 500 Events</p>
+          <div class="mt-4 text-4xl font-bold text-gray-800">150</div>
+          <div
+            class="flex justify-center items-center gap-1 text-green-500 text-sm mt-1"
+          >
+            <span>30%</span>
+            <span>↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+
+        <div class="bg-white shadow-md rounded-2xl p-6 text-center">
+          <h2 class="text-lg font-semibold text-gray-700">Comedy</h2>
+          <p class="text-sm text-gray-500">3 500 Events</p>
+          <div class="mt-4 text-4xl font-bold text-gray-800">150</div>
+          <div
+            class="flex justify-center items-center gap-1 text-green-500 text-sm mt-1"
+          >
+            <span>30%</span>
+            <span>↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+
+        <div class="bg-white shadow-md rounded-2xl p-6 text-center">
+          <h2 class="text-lg font-semibold text-gray-700">Comedy</h2>
+          <p class="text-sm text-gray-500">3 500 Events</p>
+          <div class="mt-4 text-4xl font-bold text-gray-800">150</div>
+          <div
+            class="flex justify-center items-center gap-1 text-green-500 text-sm mt-1"
+          >
+            <span>30%</span>
+            <span>↑</span>
+          </div>
+          <p class="text-xs text-gray-500">Event Bookings</p>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="mt-10 flex justify-center gap-6">
+        <button
+          class="px-6 py-2 border border-purple-300 rounded-xl text-purple-600 hover:bg-purple-100 transition"
+        >
+          Add New Event
+        </button>
+        <button
+          class="px-6 py-2 border border-purple-300 rounded-xl text-purple-600 hover:bg-purple-100 transition"
+        >
+          Manage Event
+        </button>
+      </div>
+
+      <!-- Bar Chart (Dummy using divs) -->
+      <div class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-md">
+        <div class="flex items-end justify-between h-48">
+          <!-- Bars -->
+          <div class="flex flex-col items-center">
+            <div class="w-8 bg-purple-300 h-[150px] rounded-t-lg"></div>
+            <p class="mt-2 text-sm">Comedy</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-8 bg-purple-400 h-[150px] rounded-t-lg"></div>
+            <p class="mt-2 text-sm">Kids</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-8 bg-purple-500 h-[150px] rounded-t-lg"></div>
+            <p class="mt-2 text-sm">Music</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-8 bg-purple-600 h-[150px] rounded-t-lg"></div>
+            <p class="mt-2 text-sm">Workshop</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-8 bg-purple-700 h-[150px] rounded-t-lg"></div>
+            <p class="mt-2 text-sm">Performance</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-8 bg-purple-900 h-[150px] rounded-t-lg"></div>
+            <p class="mt-2 text-sm text-center">Sports Event</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="contact-modal"></div>
+
+    <script type="module" src="../dist/admin/main.js"></script>
+  </body>
+</html>

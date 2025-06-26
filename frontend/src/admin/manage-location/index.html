@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eventix</title>
+
+    <link rel="stylesheet" href="../../assets/styles/global.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap"
+    />
+    <link href="../../assets/styles/output.css" rel="stylesheet" />
+  </head>
+
+  <body class="bg-[#f8f8ff]">
+    <!-- Navbar -->
+    <div id="navbar"></div>
+
+    <main>
+      <div class="flex flex-col items-center justify-center px-8 py-6">
+        <!-- Page Title and Add Button -->
+        <div class="w-[56.6rem] flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold">Manage Location</h2>
+          <button
+            id="addEventBtn"
+            class="rounded-[10px] border-[#8d77b7] border-solid border-[1px] box-border h-[2.25rem] flex flex-row items-center justify-start py-[1rem] px-[2rem] hover:bg-gradient-to-r hover:from-[#46006e] hover:to-[#0a0417] hover:text-white hover:cursor-pointer"
+          >
+            Add New Location
+          </button>
+        </div>
+
+        <div
+          class=" relative rounded-md bg-white border-[0.5px] border-[#e5e5e5] border-solid border-[2px] box-border flex flex-col items-start justify-start py-[0.062rem] gap-[0.625rem] text-left text-[0.875rem] text-[#171717] font-poppins"
+        >
+          <div
+            class="w-[56.5rem] relative bg-[#fafafa] border-[#e5e5e5] border-solid border-b-[1px] box-border h-[3.563rem] text-[0.75rem] text-[#737373]"
+          >
+            <div
+              class="absolute top-[0rem] left-[0rem] bg-[rgba(0, 0, 0, 0)] w-[56.5rem] h-[3.563rem]"
+            >
+              <div
+                class="absolute top-[0rem] left-[0rem] bg-[rgba(0, 0, 0, 0)] w-[7.419rem] h-[3.531rem]"
+              >
+                <b class="absolute top-[1.25rem] left-[1.5rem]">Sl. No.</b>
+              </div>
+              <div
+                class="absolute top-[0rem] left-[7.375rem] bg-[rgba(0, 0, 0, 0)] w-[14.688rem] flex flex-row items-center justify-start py-[1.25rem] px-[1.5rem] box-border"
+              >
+                <b class="relative">Country</b>
+              </div>
+              <div
+                class="absolute top-[0rem] left-[22.08rem] bg-[rgba(0, 0, 0, 0)] flex flex-row items-center justify-start py-[1.25rem] px-[1.5rem]"
+              >
+                <b class="relative">State</b>
+              </div>
+              <div
+                class="absolute top-[0rem] left-[28.563rem] bg-[rgba(0, 0, 0, 0)] w-[8.188rem] h-[3.5rem] flex flex-row items-center justify-start py-[1.25rem] px-[1.5rem] box-border"
+              >
+                <b class="relative">City</b>
+              </div>
+             <div
+                class="absolute top-[0rem] left-[44.688rem] bg-[rgba(0, 0, 0, 0)] w-[11.813rem] flex flex-row items-center justify-start py-[1.25rem] px-[1.5rem] box-border"
+              >
+                <b class="relative">Action</b>
+              </div>
+            </div> 
+           <!-- <div
+              class="absolute top-[0.063rem] left-[36.748rem] bg-[rgba(0, 0, 0, 0)] w-[7.938rem] flex flex-row items-center justify-start py-[1.25rem] px-[1.5rem] box-border"
+            >
+             <b class="relative">Status</b>
+            </div> -->
+          </div>
+          <div
+            class="w-[56.5rem] relative bg-[rgba(0, 0, 0, 0)] border-[#e5e5e5] border-solid border-t-[1px] box-border h-[4.563rem]"
+          >
+            <div
+              class="absolute top-[0rem] left-[0rem] bg-[rgba(0, 0, 0, 0)] w-[7.419rem] h-[4.563rem]"
+            >
+              <div class="absolute top-[1.719rem] left-[1.5rem]">#RF001</div>
+            </div>
+            <div
+              class="absolute top-[0.031rem] left-[7.375rem] bg-[rgba(0, 0, 0, 0)] w-[14.688rem] flex flex-col items-start justify-center py-[1.125rem] px-[1.5rem] box-border gap-[0.187rem]"
+            >
+              <div class="relative">Summer Music Festival</div>
+              <div class="relative">2025</div>
+            </div>
+            <div
+              class="absolute top-[0rem] left-[22.08rem] bg-[rgba(0, 0, 0, 0)] flex flex-row items-center justify-start py-[1.75rem] px-[1.5rem]"
+            >
+              <div class="relative">$150.00</div>
+            </div>
+            <div
+              class="absolute top-[-0.031rem] left-[28.563rem] bg-[rgba(0, 0, 0, 0)] w-[8rem] flex flex-col items-start justify-center py-[1.125rem] px-[1.5rem] box-border gap-[0.187rem] text-[#737373]"
+            >
+              <div class="relative">Jan 15,</div>
+              <div class="relative">2025</div>
+            </div>
+            <div
+              class="absolute top-[0rem] left-[44.686rem] bg-[rgba(0, 0, 0, 0)] w-[11.813rem] flex flex-col items-center justify-center p-[1.5rem] box-border text-center text-[0.75rem] text-white"
+            >
+              <div
+                class="self-stretch relative bg-[rgba(0, 0, 0, 0)] h-[1.625rem]"
+              >
+                <div
+                  class="absolute top-[0rem] left-[0rem] rounded bg-[#262626] w-[4.488rem] h-[1.625rem]"
+                >
+                  <div
+                    class="w-[1.375rem] relative text-[0.75rem] font-poppins text-white text-center inline-block edit-btn"
+                  >
+                    Edit
+                  </div>
+                </div>
+                <div
+                  class="absolute top-[0rem] left-[4.986rem] rounded bg-white border-[#d4d4d4] border-solid border-[1px] box-border w-[3.825rem] h-[1.625rem] text-[#404040]"
+                >
+                  <div class="absolute top-[0.313rem] left-[0.75rem]">
+                    Delete
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="absolute top-[-0.031rem] left-[36.75rem] bg-[rgba(0, 0, 0, 0)] w-[7.938rem] flex flex-col items-start justify-center py-[1.562rem] px-[1.5rem] box-border text-[0.75rem] text-[#262626]"
+            >
+              <div
+                class="self-stretch rounded-[9999px] bg-[#f5f5f5] flex flex-row items-center justify-center py-[0.25rem] px-[0.75rem]"
+              >
+                <div class="relative">Active</div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="w-[56.5rem] relative bg-[rgba(0, 0, 0, 0)] border-[#e5e5e5] border-solid border-t-[1px] box-border h-[4.563rem]"
+          >
+            <div
+              class="absolute top-[0rem] left-[0rem] bg-[rgba(0, 0, 0, 0)] w-[7.419rem] h-[4.563rem]"
+            >
+              <div class="absolute top-[1.719rem] left-[1.5rem]">#RF001</div>
+            </div>
+            <div
+              class="absolute top-[0.031rem] left-[7.375rem] bg-[rgba(0, 0, 0, 0)] w-[14.688rem] flex flex-col items-start justify-center py-[1.125rem] px-[1.5rem] box-border gap-[0.187rem]"
+            >
+              <div class="relative">Summer Music Festival</div>
+              <div class="relative">2025</div>
+            </div>
+            <div
+              class="absolute top-[0rem] left-[22.08rem] bg-[rgba(0, 0, 0, 0)] flex flex-row items-center justify-start py-[1.75rem] px-[1.5rem]"
+            >
+              <div class="relative">$150.00</div>
+            </div>
+            <div
+              class="absolute top-[-0.031rem] left-[28.563rem] bg-[rgba(0, 0, 0, 0)] w-[8rem] flex flex-col items-start justify-center py-[1.125rem] px-[1.5rem] box-border gap-[0.187rem] text-[#171717]"
+            >
+              <div class="relative">Jan 15,</div>
+              <div class="relative">2025</div>
+            </div>
+            <div
+              class="absolute top-[0rem] left-[44.686rem] bg-[rgba(0, 0, 0, 0)] w-[11.813rem] flex flex-col items-center justify-center p-[1.5rem] box-border text-center text-[0.75rem] text-white"
+            >
+              <div
+                class="self-stretch relative bg-[rgba(0, 0, 0, 0)] h-[1.625rem]"
+              >
+                <div
+                  class="absolute top-[0rem] left-[0rem] rounded bg-[#262626] w-[4.488rem] h-[1.625rem]"
+                >
+                  <div class="absolute top-[0.313rem] left-[1.563rem]">
+                    Edit
+                  </div>
+                </div>
+                <div
+                  class="absolute top-[0rem] left-[4.986rem] rounded bg-white border-[#d4d4d4] border-solid border-[1px] box-border w-[3.825rem] h-[1.625rem] text-[#404040]"
+                >
+                  <div class="absolute top-[0.313rem] left-[0.75rem]">
+                    Delete
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div
+              class="absolute top-[-0.031rem] left-[36.75rem] bg-[rgba(0, 0, 0, 0)] w-[7.938rem] flex flex-col items-start justify-center py-[1.562rem] px-[1.5rem] box-border text-[0.75rem] text-[#262626]"
+            >
+              <div
+                class="self-stretch rounded-[9999px] bg-[#f5f5f5] flex flex-row items-center justify-center py-[0.25rem] px-[0.75rem]"
+              >
+                <div class="relative">Active</div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="w-[56.5rem] relative bg-[rgba(0, 0, 0, 0)] border-[#e5e5e5] border-solid border-t-[1px] box-border h-[4.563rem]"
+          >
+            <div
+              class="absolute top-[0rem] left-[0rem] bg-[rgba(0, 0, 0, 0)] w-[7.419rem] h-[4.563rem]"
+            >
+              <div class="absolute top-[1.719rem] left-[1.5rem]">#RF001</div>
+            </div>
+            <div
+              class="absolute top-[0.031rem] left-[7.375rem] bg-[rgba(0, 0, 0, 0)] w-[14.688rem] flex flex-col items-start justify-center py-[1.125rem] px-[1.5rem] box-border gap-[0.187rem]"
+            >
+              <div class="relative">Summer Music Festival</div>
+              <div class="relative">2025</div>
+            </div>
+            <div
+              class="absolute top-[0rem] left-[22.08rem] bg-[rgba(0, 0, 0, 0)] flex flex-row items-center justify-start py-[1.75rem] px-[1.5rem]"
+            >
+              <div class="relative">$150.00</div>
+            </div>
+            <div
+              class="absolute top-[-0.031rem] left-[28.563rem] bg-[rgba(0, 0, 0, 0)] w-[8rem] flex flex-col items-start justify-center py-[1.125rem] px-[1.5rem] box-border gap-[0.187rem] text-[#737373]"
+            >
+              <div class="relative">Jan 15,</div>
+              <div class="relative">2025</div>
+            </div>
+            <div
+              class="absolute top-[0rem] left-[44.686rem] bg-[rgba(0, 0, 0, 0)] w-[11.813rem] flex flex-col items-center justify-center p-[1.5rem] box-border text-center text-[0.75rem] text-white"
+            >
+              <div
+                class="self-stretch relative bg-[rgba(0, 0, 0, 0)] h-[1.625rem]"
+              >
+                <div
+                  class="absolute top-[0rem] left-[0rem] rounded bg-[#262626] w-[4.488rem] h-[1.625rem]"
+                >
+                  <div class="absolute top-[0.313rem] left-[1.563rem] edit-btn">
+                   Edit
+                  </div>
+                </div>
+                <div
+                  class="absolute top-[0rem] left-[4.986rem] rounded bg-white border-[#d4d4d4] border-solid border-[1px] box-border w-[3.825rem] h-[1.625rem] text-[#404040]"
+                >
+                  <div class="absolute top-[0.313rem] left-[0.75rem] delete-btn">
+                    Delete
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="absolute top-[-0.031rem] left-[36.75rem] bg-[rgba(0, 0, 0, 0)] w-[7.938rem] flex flex-col items-start justify-center py-[1.562rem] px-[1.5rem] box-border text-[0.75rem] text-[#262626]"
+            >
+              <div
+                class="self-stretch rounded-[9999px] bg-[#f5f5f5] flex flex-row items-center justify-center py-[0.25rem] px-[0.75rem]"
+              >
+                <div class="relative">Active</div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="w-[56.5rem] relative bg-[rgba(0, 0, 0, 0)] border-[#e5e5e5] border-solid border-t-[1px] box-border h-[4.563rem]"
+          >
+            <div
+              class="absolute top-[0rem] left-[0rem] bg-[rgba(0, 0, 0, 0)] w-[7.419rem] h-[4.531rem]"
+            >
+              <div class="absolute top-[1.719rem] left-[1.5rem]">#RF002</div>
+            </div>
+            <div
+              class="absolute top-[0.031rem] left-[7.375rem] bg-[rgba(0, 0, 0, 0)] w-[14.688rem] flex flex-row items-center justify-start py-[1.75rem] px-[1.5rem] box-border"
+            >
+              <div class="relative">Tech Conference 2025</div>
+            </div>
+            <div
+              class="absolute top-[0rem] left-[22.08rem] bg-[rgba(0, 0, 0, 0)] flex flex-row items-center justify-start py-[1.75rem] px-[1.5rem]"
+            >
+              <div class="relative">$299.00</div>
+            </div>
+            <div
+              class="absolute top-[-0.031rem] left-[28.563rem] bg-[rgba(0, 0, 0, 0)] w-[8.188rem] flex flex-col items-start justify-center py-[1.125rem] px-[1.5rem] box-border gap-[0.187rem] text-[#737373]"
+            >
+              <div class="relative">Jan 14,</div>
+              <div class="relative">2025</div>
+            </div>
+            <div
+              class="absolute top-[-0.031rem] left-[36.75rem] bg-[rgba(0, 0, 0, 0)] w-[7.938rem] h-[4.563rem] flex flex-col items-start justify-center py-[1.562rem] px-[1.5rem] box-border text-[0.75rem] text-[#262626]"
+            >
+              <div
+                class="self-stretch rounded-[9999px] bg-[#f5f5f5] flex flex-row items-center justify-center py-[0.25rem] px-[0.75rem]"
+              >
+                <div class="relative">Ended</div>
+              </div>
+            </div>
+            <div
+              class="absolute top-[0.031rem] left-[44.688rem] bg-[rgba(0, 0, 0, 0)] w-[11.813rem] h-[4.5rem] flex flex-col items-start justify-center p-[1.5rem] box-border text-center text-[0.75rem] text-[#737373]"
+            >
+              <div class="w-[5.25rem] relative rounded bg-[#f5f5f5] h-[1.5rem]">
+                <div class="absolute top-[0.25rem] left-[1.375rem]">
+                  Details
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="w-[56.5rem] relative bg-[rgba(0, 0, 0, 0)] border-[#e5e5e5] border-solid border-t-[1px] box-border h-[4.563rem]"
+          >
+            <div
+              class="absolute top-[0rem] left-[0rem] bg-[rgba(0, 0, 0, 0)] w-[7.419rem] h-[4.531rem]"
+            >
+              <div class="absolute top-[1.719rem] left-[1.5rem]">#RF002</div>
+            </div>
+            <div
+              class="absolute top-[0.031rem] left-[7.375rem] bg-[rgba(0, 0, 0, 0)] w-[14.688rem] flex flex-row items-center justify-start py-[1.75rem] px-[1.5rem] box-border"
+            >
+              <div class="relative">Tech Conference 2025</div>
+            </div>
+            <div
+              class="absolute top-[0rem] left-[22.08rem] bg-[rgba(0, 0, 0, 0)] flex flex-row items-center justify-start py-[1.75rem] px-[1.5rem]"
+            >
+              <div class="relative">$299.00</div>
+            </div>
+            <div
+              class="absolute top-[-0.031rem] left-[28.563rem] bg-[rgba(0, 0, 0, 0)] w-[8.188rem] flex flex-col items-start justify-center py-[1.125rem] px-[1.5rem] box-border gap-[0.187rem] text-[#737373]"
+            >
+              <div class="relative">Jan 14,</div>
+              <div class="relative">2025</div>
+            </div>
+            <div
+              class="absolute top-[-0.031rem] left-[36.75rem] bg-[rgba(0, 0, 0, 0)] w-[7.938rem] h-[4.563rem] flex flex-col items-start justify-center py-[1.562rem] px-[1.5rem] box-border text-[0.75rem] text-[#262626]"
+            >
+              <div
+                class="self-stretch rounded-[9999px] bg-[#f5f5f5] flex flex-row items-center justify-center py-[0.25rem] px-[0.75rem]"
+              >
+                <div class="relative">Ended</div>
+              </div>
+            </div>
+            <div
+              class="absolute top-[0.031rem] left-[44.688rem] bg-[rgba(0, 0, 0, 0)] w-[11.813rem] h-[4.5rem] flex flex-col items-start justify-center p-[1.5rem] box-border text-center text-[0.75rem] text-[#737373]"
+            >
+              <div class="w-[5.25rem] relative rounded bg-[#f5f5f5] h-[1.5rem]">
+                <div class="absolute top-[0.25rem] left-[1.375rem]">
+                  Details
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="w-[56.5rem] relative bg-[rgba(0, 0, 0, 0)] border-[#e5e5e5] border-solid border-t-[1px] box-border h-[4.563rem]"
+          >
+            <div
+              class="absolute top-[0rem] left-[0rem] bg-[rgba(0, 0, 0, 0)] w-[7.419rem] h-[4.531rem]"
+            >
+              <div class="absolute top-[1.719rem] left-[1.5rem]">#RF002</div>
+            </div>
+            <div
+              class="absolute top-[0.031rem] left-[7.375rem] bg-[rgba(0, 0, 0, 0)] w-[14.688rem] flex flex-row items-center justify-start py-[1.75rem] px-[1.5rem] box-border"
+            >
+              <div class="relative">Tech Conference 2025</div>
+            </div>
+            <div
+              class="absolute top-[0rem] left-[22.08rem] bg-[rgba(0, 0, 0, 0)] flex flex-row items-center justify-start py-[1.75rem] px-[1.5rem]"
+            >
+              <div class="relative">$299.00</div>
+            </div>
+            <div
+              class="absolute top-[-0.031rem] left-[28.563rem] bg-[rgba(0, 0, 0, 0)] w-[8.188rem] flex flex-col items-start justify-center py-[1.125rem] px-[1.5rem] box-border gap-[0.187rem] text-[#737373]"
+            >
+              <div class="relative">Jan 14,</div>
+              <div class="relative">2025</div>
+            </div>
+            <div
+              class="absolute top-[-0.031rem] left-[36.75rem] bg-[rgba(0, 0, 0, 0)] w-[7.938rem] h-[4.563rem] flex flex-col items-start justify-center py-[1.562rem] px-[1.5rem] box-border text-[0.75rem] text-[#262626]"
+            >
+              <div
+                class="self-stretch rounded-[9999px] bg-[#f5f5f5] flex flex-row items-center justify-center py-[0.25rem] px-[0.75rem]"
+              >
+                <div class="relative">Ended</div>
+              </div>
+            </div>
+            <div
+              class="absolute top-[0.031rem] left-[44.688rem] bg-[rgba(0, 0, 0, 0)] w-[11.813rem] h-[4.5rem] flex flex-col items-start justify-center p-[1.5rem] box-border text-center text-[0.75rem] text-[#737373]"
+            >
+              <div class="w-[5.25rem] relative rounded bg-[#f5f5f5] h-[1.5rem]">
+                <div class="absolute top-[0.25rem] left-[1.375rem]">
+                  Details
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script
+      type="module"
+      src="../../dist/admin/manage-location/manageLoc.js"
+    ></script>
+  </body>
+</html>
