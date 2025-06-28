@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
+use App\Models\Event;
+use App\Models\EventCategory;
+use App\Models\EventVenue;
+use App\Models\Ticket;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -105,5 +110,88 @@ class AdminController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
+    }
+
+    public function getEventStats(Request $request)
+    {
+        try {
+            $admin = auth()->user();
+
+            if (!$admin) {
+                return response()->json(['error' => 'Unauthenticated'], 401);
+            }
+
+            $today = Carbon::now();
+            $startOfThisWeek = $today->copy()->startOfWeek();
+            $endOfThisWeek = $today->copy()->endOfWeek();
+
+            // Get all categories along with an array of events with a nested array of venues for each event
+            $categories = EventCategory::with(['events.eventVenue'])->get();
+            $result = [];
+
+            foreach ($categories as $category) {
+                $totalEvents = $category->events->count();
+
+                // Filter events that contains any event venue scheduled this week
+                $thisWeek = $category->events->filter(function ($event) use ($startOfThisWeek, $endOfThisWeek) {
+                    return $event->eventVenue->contains(function ($venue) use ($startOfThisWeek, $endOfThisWeek) {
+                        return Carbon::parse($venue->start_datetime)->between($startOfThisWeek, $endOfThisWeek);
+                    });
+                })->count();
+
+                $growthPercentage = $totalEvents === 0 ? ($thisWeek === 0 ? 0 : 100) : round(($thisWeek / $totalEvents) * 100);
+
+                $result[] = [
+                    'category' => $category->name,
+                    'total_events' => $totalEvents,
+                    'this_week_events' => $thisWeek,
+                    'growth_percentage' => $growthPercentage,
+
+                ];
+            }
+
+
+            return response()->json([
+                'success' => true,
+                'data' => $result
+            ]);
+        } catch (\Throwable $e) {
+            \Log::error('Crash in getEventStats', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            return response()->json([
+                'error' => 'Internal Server Error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getTicketStats()
+    {
+        $startOfWeek = Carbon::now()->copy()->startOfWeek();
+        $endOfWeek = Carbon::now()->copy()->endOfWeek();
+
+        $categories = EventCategory::all();
+        $result = [];
+
+        foreach ($categories as $category) {
+            $ticketsSold = Ticket::whereBetween('created_at', [$startOfWeek, $endOfWeek])
+                ->whereHas('eventVenue.event', function ($q) use ($category) {
+                    $q->where('category_id', $category->id);
+                })->where('status', 'booked')->count();
+
+            $result[] = [
+                'category' => $category->name,
+                'tickets_sold' => $ticketsSold
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $result
+        ]);
     }
 }

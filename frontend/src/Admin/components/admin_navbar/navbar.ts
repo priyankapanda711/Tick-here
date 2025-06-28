@@ -1,11 +1,11 @@
 export function loadNavbar(): void {
   const navbarContainer = document.getElementById("navbar");
- 
+
   if (!navbarContainer) {
     console.error("Navbar container not found");
     return;
   }
- 
+
   // Correct relative path for fetch
   fetch("/Admin/components/admin_navbar/index.html")
     .then((response) => {
@@ -16,14 +16,14 @@ export function loadNavbar(): void {
     })
     .then((html) => {
       navbarContainer.innerHTML = html;
- 
+
       // Profile dropdown logic
       const userAvatar = document.getElementById("userAvatar");
       const frameContainer = document.getElementById("frameContainer");
- 
+
       if (userAvatar && frameContainer) {
         let isVisible = false;
- 
+
         userAvatar.addEventListener("click", (e) => {
           e.stopPropagation();
           isVisible = !isVisible;
@@ -37,7 +37,7 @@ export function loadNavbar(): void {
             frameContainer.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
           }
         });
- 
+
         document.addEventListener("click", (e) => {
           if (
             !frameContainer.contains(e.target as Node) &&
@@ -48,10 +48,10 @@ export function loadNavbar(): void {
           }
         });
       }
- 
+
       // Nav logic for admin tabs (Dashboard, Venue, Location)
       const navTabs = document.querySelectorAll(".nav-tab");
- 
+
       navTabs.forEach((tab) => {
         tab.addEventListener("click", () => {
           // Remove active style from all tabs
@@ -64,7 +64,7 @@ export function loadNavbar(): void {
             );
             t.classList.add("border", "border-[#191970]", "text-black");
           });
- 
+
           // Add active style to clicked tab
           tab.classList.remove("border", "border-[#191970]", "text-black");
           tab.classList.add(
@@ -73,16 +73,17 @@ export function loadNavbar(): void {
             "to-[#0a0417]",
             "text-white"
           );
- 
+
           // Navigate based on text
           const text = (tab.textContent || "").trim().toLowerCase();
- 
+
           if (text === "dashboard") window.location.href = "/admin/";
           else if (text === "venue") window.location.href = "/admin/venue";
-          else if (text === "location") window.location.href = "/admin/location";
+          else if (text === "location")
+            window.location.href = "/admin/location";
         });
       });
- 
+
       // Optional: highlight current tab based on URL
       const currentPath = window.location.pathname;
 
@@ -90,12 +91,15 @@ export function loadNavbar(): void {
         const text = tab.textContent?.trim().toLowerCase();
 
         const match =
-          (text === "dashboard" && currentPath === "/admin/") ||
+          (text === "dashboard" &&
+            (currentPath === "/admin/" ||
+              currentPath.includes("/create_event") ||
+              currentPath.includes("/manage_event"))) ||
           (text === "venue" && currentPath.includes("/venue")) ||
           (text === "location" && currentPath.includes("/location"));
- 
+
         if (match) {
-          tab.classList.remove( "text-black");
+          tab.classList.remove("text-black");
           tab.classList.add(
             "bg-gradient-to-r",
             "from-[#46006e]",
@@ -104,9 +108,37 @@ export function loadNavbar(): void {
           );
         }
       });
+
+      // add logout functionality
+      $("#logoutBtn").on("click", function () {
+        const token = localStorage.getItem("admin_token");
+
+        if (!token) {
+          alert("No token found.");
+          return;
+        }
+
+        $.ajax({
+          url: "http://127.0.0.1:8000/api/auth/admin/logout",
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + token,
+            Accept: "application/json",
+          },
+          success: function (response) {
+            // Clear the token and redirect
+            localStorage.removeItem("admin_token");
+            window.location.href = "/admin/admin_login/";
+          },
+          error: function (xhr) {
+            const error = xhr.responseJSON?.message || "Logout failed.";
+            alert(error);
+            console.error("Logout error:", xhr);
+          },
+        });
+      });
     })
     .catch((error) => {
       console.error("Error loading navbar:", error);
     });
 }
-

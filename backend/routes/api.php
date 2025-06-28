@@ -83,14 +83,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
  * ADMIN ROUTES
  */
 
-Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/auth/admin/logout', [AdminController::class, 'logout']);
     Route::get('/auth/admin/profile', [AdminController::class, 'profile']);
     Route::put('/auth/admin/profile', [AdminController::class, 'update']);
 
-    Route::prefix('admin')->group(function () {
-        Route::get('/event-stats', [AdminDashboardController::class, 'getEventStats']);
-        Route::get('/ticket-stats', [AdminDashboardController::class, 'getTicketStats']);
+    Route::prefix('/admin')->group(function () {
+        Route::get('/event-stats', [AdminController::class, 'getEventStats']);
+        Route::get('/ticket-stats', [AdminController::class, 'getTicketStats']);
     });
 
     // Events

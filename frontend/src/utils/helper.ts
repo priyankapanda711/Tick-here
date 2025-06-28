@@ -35,3 +35,15 @@ export function fetchCategories(): Promise<Category[]> {
     });
   });
 }
+
+//csrf cookie
+export async function initCSRF(): Promise<void> {
+  try {
+    await fetch("http://127.0.0.1:8000/sanctum/csrf-cookie", {
+      credentials: "include",
+    });
+    console.log("✅ CSRF cookie initialized");
+  } catch (error) {
+    console.error("❌ Failed to initialize CSRF cookie", error);
+  }
+}
