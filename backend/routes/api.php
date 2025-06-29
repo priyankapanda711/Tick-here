@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\EventCategoryController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Models\User;
@@ -13,43 +14,37 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\VenueController;
 use App\Http\Controllers\EventVenuesController;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-/**
- * PUBLIC ROUTES
- * Accessible without authentication
- */
+use App\Http\Controllers\StripeController;
 
 // User registration, verification & login
 Route::post('/users', [UserController::class, 'store']);
 Route::post('/auth/user/login', [UserController::class, 'login']);
 Route::post('/email/resend', [UserController::class, 'resendVerificationEmail'])->middleware('auth:sanctum');
 
-
 // Admin registration & login
 Route::post('/admin', [AdminController::class, 'store']);
 Route::post('/auth/admin/login', [AdminController::class, 'login']);
 
-// Public Event Data
+// Public Data
 Route::get('/events/{event}', [EventController::class, 'getEvent']); // Get event details
 Route::get('/events/{event}/venues', [EventVenuesController::class, 'getVenuesByEvent']); // Venues for an event
+
+Route::get('/locations', [LocationController::class, 'index']); // Get all locations
+Route::get('/events/locations/{location}', [EventController::class, 'getEventsByLocation']); // all Events for a location
+Route::get('/categories', [EventCategoryController::class, 'index']);
+
+
+// Seats data
+Route::get('/venues/{id}/seats', [VenueController::class, 'seats']);
+
+
 
 
 // Verify email
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
     $user = User::findOrFail($id);
 
-    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+    if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
         return response()->json(['message' => 'Invalid verification link'], 403);
     }
 
@@ -71,20 +66,32 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) 
 
 /**
  * USER ROUTES
-*/
+ */
+
+
+
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::post('/auth/user/logout', [UserController::class, 'logout']);
-    Route::get('/auth/user/profile', [UserController::class, 'profile']);
+    Route::post('/auth/user/profile', [UserController::class, 'profile']);
     Route::put('/auth/user/profile', [UserController::class, 'update']);
+    Route::post('/auth/user/logout', [UserController::class, 'logout']);
+    Route::post('/auth/user/change-password', [UserController::class, 'changePassword']);
+
+    Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession']);
 });
 
 /**
  * ADMIN ROUTES
  */
+
 Route::middleware(['auth:sanctum', 'admin', 'verified'])->group(function () {
     Route::post('/auth/admin/logout', [AdminController::class, 'logout']);
     Route::get('/auth/admin/profile', [AdminController::class, 'profile']);
     Route::put('/auth/admin/profile', [AdminController::class, 'update']);
+
+    Route::prefix('admin/dashboard')->group(function () {
+        Route::get('/event-stats', [AdminDashboardController::class, 'getEventStats']);
+        Route::get('/ticket-stats', [AdminDashboardController::class, 'getTicketStats']);
+    });
 
     // Events
     Route::post('/', [EventController::class, 'index']); // Get all events
@@ -95,9 +102,9 @@ Route::middleware(['auth:sanctum', 'admin', 'verified'])->group(function () {
 
     // Locations
     Route::post('/admin/locations', [LocationController::class, 'create']);
-    Route::get('/admin/locations', [LocationController::class, 'index']);
     Route::delete('/admin/locations/{location}', [LocationController::class, 'delete']);
     Route::put('/admin/locations/{location}', [LocationController::class, 'update']);
+    Route::get('/admin/locations', [LocationController::class, 'index']);
 
     // Venues
     Route::post('/admin/venues', [VenueController::class, 'create']);
@@ -106,7 +113,6 @@ Route::middleware(['auth:sanctum', 'admin', 'verified'])->group(function () {
     Route::put('/admin/venues/{venue}', [VenueController::class, 'update']);
 
     //Categories
-    Route::post('/admin/categories', [EventCategoryController::class, 'index']);
     Route::post('/admin/categories', [EventCategoryController::class, 'create']);
     Route::delete('/admin/categories/{category}', [EventCategoryController::class, 'delete']);
     Route::put('/admin/categories/{category}', [EventCategoryController::class, 'update']);

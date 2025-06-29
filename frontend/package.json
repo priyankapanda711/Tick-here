@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jquery": "^3.5.32",
     "autoprefixer": "^10.4.21",
     "live-server": "^1.2.2",
     "postcss": "^8.5.4",
@@ -21,6 +22,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^7.3.1",
     "@tailwindcss/cli": "^4.1.8",
     "axios": "^1.9.0"
   },

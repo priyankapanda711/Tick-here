@@ -173,6 +173,7 @@ paths:
         "401":
           description: Unauthorized
 
+  #todo (not used yet)
   /events/{event}/venues:
     get:
       summary: Get all venues for a specific event
@@ -277,7 +278,7 @@ paths:
         "204":
           description: Event deleted successfully
 
-  /events/{location}:
+  /events/locations/{location}:
     get:
       tags:
         - User - Events
@@ -305,7 +306,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/Event"
 
-  # categories
+  # todo categories
   /admin/categories:
     post:
       summary: Create a new category
@@ -321,9 +322,10 @@ paths:
         "201":
           description: Category created successfully
 
+  /categories:
     get:
       summary: Get all categories
-      tags: [Admin]
+      tags: [Admin, User]
       responses:
         "200": { description: Categories listed }
 
@@ -380,9 +382,17 @@ paths:
 
     get:
       summary: List all locations
-      tags: [Admin]
       security:
         - sanctum: []
+      tags: [Admin]
+      responses:
+        "200":
+          description: List of locations
+
+  /locations:
+    get:
+      summary: List all locations
+      tags: [User]
       responses:
         "200":
           description: List of locations
@@ -482,12 +492,12 @@ paths:
           description: Venue deleted successfully
 
   # seats
-  /seats/{event_venue_id}:
+  /venues/{venueId}/seats:
     get:
       summary: Get available seats for an event in a venue
       tags: [User, Booking]
       parameters:
-        - name: event_venue_id
+        - name: venue_id
           in: path
           required: true
           schema: { type: integer }
@@ -560,6 +570,63 @@ paths:
       responses:
         "200": { description: PDF generated }
 
+  # Admin Dashboard
+  /api/admin/dashboard/event-stats:
+    get:
+      summary: Get event statistics per category with weekly growth
+      tags:
+        - Admin Dashboard
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        category:
+                          type: string
+                        total_events:
+                          type: integer
+                        last_week_events:
+                          type: integer
+                        growth_percentage:
+                          type: number
+                        total_bookings:
+                          type: integer
+
+  /api/admin/dashboard/ticket-stats:
+    get:
+      summary: Get ticket count per category for current week
+      tags:
+        - Admin Dashboard
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        category:
+                          type: string
+                        tickets_sold:
+                          type: integer
+
   # Waiting List
   /waiting-list:
     post:
@@ -627,7 +694,7 @@ components:
       type: object
       properties:
         id: { type: integer }
-        location_name: { type: string }
+        city: { type: string }
         state: { type: string }
         country: { type: string }
 

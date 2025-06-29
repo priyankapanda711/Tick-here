@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\venue;
+use App\Services\SeatGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -27,7 +28,8 @@ class VenueController extends Controller
             $data = request()->validate([
                 "venue_name" => "required",
                 "location_id" => ['required', Rule::exists('locations', 'id')],
-                "available_seats" => "required|min:2"
+                "max_seats" => "required|min:2",
+                "price" => "required",
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -36,12 +38,19 @@ class VenueController extends Controller
             ], 404);
         }
 
-        $res = Venue::create($data);
+        $res = Venue::create([
+            "venue_name" => $data['venue_name'],
+            "location_id" => $data['location_id'],
+            "max_seats" => $data['max_seats']
+        ]);
+
+        // Auto-generate seats
+        SeatGenerator::generateSeats($res->id, $res->max_seats, $data['price']);
 
         if ($res) {
             return response()->json([
                 'success' => true,
-                'message' => "Venue Created"
+                'message' => "Venue and seats Created"
             ], 200);
         } else {
             return response()->json([
@@ -52,7 +61,8 @@ class VenueController extends Controller
     }
 
     //delete a venue (admin)
-    public function delete(Venue $venue){
+    public function delete(Venue $venue)
+    {
         $res = $venue->delete();
 
         if ($res) {
@@ -69,26 +79,36 @@ class VenueController extends Controller
     }
 
     //update a venue (admin)
-    public function update(Request $request, Venue $venue){
+    public function update(Request $request, Venue $venue)
+    {
         if (!$venue) {
-                return response()->json([
-                        'success' => false,
-                        'message' => 'Venue not found.'
-                ], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Venue not found.'
+            ], 404);
         }
 
         $validated = $request->validate([
-                "venue_name" => "required",
-                "location_id" => ['required', 'integer', Rule::exists('locations', 'id')],
-                "available_seats" => "required|min:2"
+            "venue_name" => "required",
+            "location_id" => ['required', 'integer', Rule::exists('locations', 'id')],
+            "available_seats" => "required|min:2"
         ]);
 
         $venue->update($validated);
 
         return response()->json([
-                'success' => true,
-                'message' => 'Venue updated successfully.',
-                'data' => $venue
+            'success' => true,
+            'message' => 'Venue updated successfully.',
+            'data' => $venue
         ], 200);
+    }
+
+    public function seats($id)
+    {
+        $venue = Venue::with('seats')->findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'seats' => $venue->seats,
+        ]);
     }
 }

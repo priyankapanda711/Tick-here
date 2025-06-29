@@ -11,27 +11,27 @@ class EventVenuesController extends Controller
     public function getVenuesByEvent($event)
     {
         $venues = EventVenue::with(['location', 'venue'])
-        ->where('event_id', $event->id)
-        ->get()
-        ->groupBy('location_id')
-        ->map(function ($group) {
-            $location = $group->first()->location;
+            ->where('event_id', $event->id)
+            ->get()
+            ->groupBy('location_id')
+            ->map(function ($group) {
+                $location = $group->first()->location;
 
-            return [
-                'location_id' => $location->id,
-                'location_name' => $location->location_name,
-                'state' => $location->state,
-                'country' => $location->country,
-                'venues' => $group->map(function ($ev) {
-                    return [
-                        'venue_id' => $ev->venue->id,
-                        'venue_name' => $ev->venue->venue_name,
-                        'available_seats' => $ev->available_seats,
-                        'start_datetime' => $ev->start_datetime
-                    ];
-                })->values()
-            ];
-        })->values(); // to re-index keys
+                return [
+                    'location_id' => $location->id,
+                    'city' => $location->city,
+                    'state' => $location->state,
+                    'country' => $location->country,
+                    'venues' => $group->map(function ($ev) {
+                        return [
+                            'venue_id' => $ev->venue->id,
+                            'venue_name' => $ev->venue->venue_name,
+                            'available_seats' => $ev->available_seats,
+                            'start_datetime' => $ev->start_datetime
+                        ];
+                    })->values()
+                ];
+            })->values(); // to re-index keys
 
         return response()->json([
             'success' => true,
@@ -40,7 +40,8 @@ class EventVenuesController extends Controller
     }
 
     //get all the tickets for an event (admin only)
-    public function getTicketsByEvent($eventId){
+    public function getTicketsByEvent($eventId)
+    {
 
     }
 }

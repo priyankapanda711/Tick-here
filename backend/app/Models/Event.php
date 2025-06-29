@@ -9,13 +9,24 @@ class Event extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'thumbnail', 'duration', 'admin_id','category_id'];
+    protected $fillable = [
+        'title',
+        'description',
+        'thumbnail',
+        'duration',
+        'admin_id',
+        'category_id'
+    ];
 
-    //get all the different vanues for an event , where the event will going to be held
+    // Automatically load eventVenue and its nested venue & location
+    protected $with = ['eventVenue', 'category'];
+
     public function eventVenue()
     {
         return $this->hasMany(EventVenue::class);
     }
+    public function category()
+    {
+        return $this->belongsTo(EventCategory::class, 'category_id', );
+    }
 }
-
-

@@ -21,7 +21,6 @@ class Admin extends Model
     ];
 
 
-
     //A guard defines how users are authenticated for each request. this saying that ,This model should be authenticated using the admin guard configuration."
     protected $guard = 'admin';
 

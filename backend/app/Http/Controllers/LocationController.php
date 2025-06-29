@@ -26,7 +26,7 @@ class LocationController extends Controller
             $data = request()->validate([
                 "country" => "required|string",
                 "state" => "required|string",
-                "location_name" => "required|string"
+                "city" => "required|string"
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -81,7 +81,7 @@ class LocationController extends Controller
         $validated = $request->validate([
             "country" => "required|string",
             "state" => "required|string",
-            "location_name" => "required|string"
+            "city" => "required|string"
         ]);
 
         $location->update($validated);

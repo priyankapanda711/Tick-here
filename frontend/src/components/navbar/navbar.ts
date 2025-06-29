@@ -16,6 +16,26 @@ export function loadNavbar(): void {
     .then((html) => {
       if (navbarContainer) {
         navbarContainer.innerHTML = html;
+        const login_logout_toggle=document.getElementById("login_logout_toggle");
+
+        const token = localStorage.getItem("auth-token") 
+
+        if(token && login_logout_toggle){
+          login_logout_toggle.textContent="Log Out";
+          login_logout_toggle.addEventListener('click',function () {
+            localStorage.removeItem("auth-token");
+            localStorage.removeItem("username");
+            window.location.reload();
+          })
+        }
+        else{
+          if(login_logout_toggle){
+            login_logout_toggle.textContent="Log In"
+            login_logout_toggle.addEventListener('click',function () {
+              window.location.href="/Login";
+          })
+          }
+        }
 
         // User profile dropdown logic
         const userAvatar = document.getElementById("userAvatar");
@@ -65,8 +85,10 @@ export function loadNavbar(): void {
             let path = "";
 
             if (targetText.includes("home")) path = "/";
-            else if (targetText.includes("all events")) path = "/events";
-            else if (targetText.includes("my bookings")) path = "/bookings";
+            else if (targetText.includes("all events")) {
+              path = "/events";
+              sessionStorage.removeItem("selected");
+            } else if (targetText.includes("my bookings")) path = "/bookings";
 
             if (path) {
               window.location.href = path;
