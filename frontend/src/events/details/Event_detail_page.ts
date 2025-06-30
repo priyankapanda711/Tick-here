@@ -91,66 +91,7 @@ const stripe = Stripe(
   "pk_test_51RbHaeHBa8sjr9k4JHp8VJ5uUgLSbkZsMlMvmjQnInpNhFV77x5cTJJVNInFQqJAHEBrCScxUVURFfKn0OHlN0mx008GD1wiuq"
 );
 
-payment_button?.addEventListener("click", async function () {
-  if (selectedSeats.size === 0) {
-    alert("No Seats Selected ..... Select The Seats First!!");
-    return;
-  }
-
-  const selected_items = document.querySelectorAll(".selected");
-  const formdata = new FormData();
-  formdata.append("place", selected_items[0].innerHTML);
-
-  if (selected_items[1].innerHTML === "Today") {
-    const today = new Date();
-    const formattedDate = today.toISOString().split("T")[0];
-    formdata.append("date", formattedDate);
-  } else if (selected_items[1].innerHTML === "Tomorrow") {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-
-    const yyyy = tomorrow.getFullYear();
-    const mm = String(tomorrow.getMonth() + 1).padStart(2, "0");
-    const dd = String(tomorrow.getDate()).padStart(2, "0");
-
-    const formattedTomorrow = `${yyyy}-${mm}-${dd}`;
-    formdata.append("date", formattedTomorrow);
-  } else {
-    formdata.append("date", selected_items[1].innerHTML);
-  }
-
-  formdata.append("time", selected_items[2].innerHTML);
-
-  formdata.append("seats", JSON.stringify(selectedSeats.toArray()));
-
-  (formdata as FormData).forEach((value, key) => {
-    console.log(`${key}: ${value}`);
-  });
-
-  const final_price = document.getElementById("final_price");
-  const new_price = final_price?.innerHTML.substring(3);
-
-  //stripe payment integration
-  const response = await fetch(
-    "http://127.0.0.1:8000/api/create-checkout-session",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        amount: new_price,
-        quantity: 1,
-      }),
-    }
-  );
-
-  const session = await response.json();
-  const result = await stripe.redirectToCheckout({ sessionId: session.id });
-
-  if (result.error) {
-    alert(result.error.message);
-  }
-});
+let event_detail: any;
 
 if (event_Id) {
   const apiUrl = `http://127.0.0.1:8000/api/events/${event_Id}`;
@@ -169,7 +110,7 @@ if (event_Id) {
 
       const event = data.payload;
       console.log(event);
-
+      event_detail = event;
       (document.getElementById("event-title") as HTMLElement).textContent =
         event.title;
       (document.getElementById("event-duration") as HTMLElement).textContent =
@@ -191,7 +132,7 @@ if (event_Id) {
         // Adding venues here
         const venue = document.createElement("p");
         venue.className =
-          "bg-[#EAE2FF] rounded-[10px] px-[34px] py-[10px] w-[377px] text-center border-[1px] cursor-pointer";
+          "bg-[#EAE2FF] rounded-[10px] px-[30px] py-[10px] w-[377px] text-center border-[1px] cursor-pointer";
         venue.addEventListener("click", function () {
           document.querySelectorAll("#Venues_div .selected").forEach((el) => {
             el.classList.remove("selected");
@@ -249,11 +190,11 @@ if (event_Id) {
         fetchAndRenderSeats(selectedVenueId);
       }
 
-      const imagePath = `http://127.0.0.1:8000/storage/thumbnails/${event.thumbnail}`;
+      const imagePath = `http://127.0.0.1:8000/storage/${event.thumbnail}`;
       const thumbnail = document.getElementById(
         "event-thumbnail"
       ) as HTMLImageElement;
-      thumbnail.src = imagePath;
+      thumbnail.src = event.thumbnail;
       thumbnail.alt = event.title;
     })
     .catch((err) => {
@@ -423,3 +364,106 @@ function fetchAndRenderSeats(venueId: number) {
       console.error("Error loading seats:", err);
     });
 }
+
+//handle payment
+payment_button?.addEventListener("click", async function () {
+  if (!localStorage.getItem("auth-token")) {
+    alert("Please Login First to continue ..")
+    return;
+  }
+
+  if (selectedSeats.size === 0) {
+    alert("No Seats Selected ..... Select The Seats First!!");
+    return;
+  }
+
+  const selected_items = document.querySelectorAll(".selected");
+  const formdata = new FormData();
+  const place = selected_items[0].innerHTML;
+
+  console.log(event_detail.event_venue);
+  let venue_id;
+
+  interface EventVenue {
+    id: number;
+    event_id: number;
+    venue_id: number;
+    location_id: number;
+    start_datetime: string;
+    created_at: string;
+    updated_at: string;
+    venue: {
+      id: number;
+      venue_name: string;
+      max_seats: number;
+      location_id: number;
+      created_at: string;
+      updated_at: string;
+    };
+  }
+
+  (event_detail.event_venue as EventVenue[]).forEach((data: EventVenue) => {
+    if (data.venue.venue_name === place) {
+      venue_id = data.venue_id;
+    }
+  });
+
+  formdata.append("venue_id", venue_id as any);
+
+  if (selected_items[1].innerHTML === "Today") {
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0];
+    formdata.append("date", formattedDate);
+  } else if (selected_items[1].innerHTML === "Tomorrow") {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const yyyy = tomorrow.getFullYear();
+    const mm = String(tomorrow.getMonth() + 1).padStart(2, "0");
+    const dd = String(tomorrow.getDate()).padStart(2, "0");
+
+    const formattedTomorrow = `${yyyy}-${mm}-${dd}`;
+    formdata.append("date", formattedTomorrow);
+  } else {
+    formdata.append("date", selected_items[1].innerHTML);
+  }
+
+  formdata.append("time", selected_items[2].innerHTML);
+
+  formdata.append("seats", JSON.stringify(selectedSeats.toArray()));
+
+  var object = {} as any;
+  formdata.forEach(function (value, key) {
+    object[key] = value;
+  });
+
+  const final_price = document.getElementById("final_price");
+  const new_price = final_price?.innerHTML.substring(3);
+  object = { ...object, "price": new_price, "eventID": event_Id };
+
+  localStorage.setItem("ticket_data", JSON.stringify(object));
+
+  //stripe payment integration
+  const response = await fetch(
+    "http://127.0.0.1:8000/api/create-checkout-session",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("auth-token")}`,
+      },
+      body: JSON.stringify({
+        amount: new_price,
+        quantity: 1,
+      }),
+    }
+  );
+
+  const session = await response.json();
+  const result = await stripe.redirectToCheckout({ sessionId: session.id });
+
+  if (result.error) {
+    alert(result.error.message);
+  }
+});
