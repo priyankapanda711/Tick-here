@@ -19,7 +19,7 @@ function linearSearch(events: any[], searchTerm: string): any[] {
   return results;
 }
 
-function loadEventsForEventsPage(
+export function loadEventsForEventsPage(
   selectedCategories: string[] = [],
   searchTerm: string = ""
 ): void {

@@ -13,13 +13,27 @@ class VenueController extends Controller
     //get all the venues (admin)
     public function index()
     {
-        $venue = Venue::get();
+        $venues = Venue::with([
+            'location',
+            'seats' => function ($query) {
+                $query->orderBy('id', 'asc');
+            }
+        ])->orderBy('id', 'asc')->paginate(10);
+
+        // Transform paginated data to include only first seat's price
+        $venues->getCollection()->transform(function ($venue) {
+            $venue->price = optional($venue->seats->first())->price;
+            unset($venue->seats); // optional: remove seats array if not needed
+            return $venue;
+        });
+
         return response()->json([
             'success' => true,
             'message' => "venue fetched",
-            'data' => $venue
+            'data' => $venues
         ]);
     }
+
 
     //create a venue (admin)
     public function create()
@@ -81,27 +95,41 @@ class VenueController extends Controller
     //update a venue (admin)
     public function update(Request $request, Venue $venue)
     {
-        if (!$venue) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Venue not found.'
-            ], 404);
-        }
-
         $validated = $request->validate([
-            "venue_name" => "required",
+            "venue_name" => "required|string",
             "location_id" => ['required', 'integer', Rule::exists('locations', 'id')],
-            "available_seats" => "required|min:2"
+            "max_seats" => "required|integer|min:2",
+            "price" => "required|numeric",
         ]);
 
-        $venue->update($validated);
+        $originalMaxSeats = $venue->max_seats;
+
+        // Update basic venue info
+        $venue->update([
+            "venue_name" => $validated['venue_name'],
+            "location_id" => $validated['location_id'],
+            "max_seats" => $validated['max_seats'],
+        ]);
+
+        if ($validated['max_seats'] != $originalMaxSeats) {
+            // CASE 1: max_seats changed → delete & regenerate seats
+            $venue->seats()->delete();
+            SeatGenerator::generateSeats($venue->id, $validated['max_seats'], $validated['price']);
+        } else {
+            // CASE 2: only price changed → update all existing seat prices
+            $venue->seats()->update(['price' => $validated['price']]);
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Venue updated successfully.',
-            'data' => $venue
+            'data' => [
+                'venue' => $venue,
+                'price' => $validated['price']
+            ]
         ], 200);
     }
+
 
     public function seats($id)
     {

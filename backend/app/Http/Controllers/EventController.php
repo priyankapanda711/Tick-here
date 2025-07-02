@@ -6,20 +6,59 @@ use App\Models\Event;
 use App\Models\EventVenue;
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class EventController extends Controller
 {
-    //get all the events (admin)
-    public function index()
+
+    //get all the events with sorting(admin)
+    public function index(Request $request)
     {
-        $events = Event::orderBy("created_at", "desc")->paginate(10);
+        $sortBy = $request->get('sort_by', 'id'); // default to 'id'
+        $sortOrder = $request->get('sort_order', 'asc');
+        $search = $request->get('search');
+
+        $statusFilter = null;
+        if (in_array(strtolower($search), ['completed', 'active', 'inactive', 'cancelled'])) {
+            $statusFilter = strtolower($search);
+            $search = null;
+        }
+
+        $validSorts = ['id', 'title', 'created_by', 'duration']; // whitelist columns
+
+        if (!in_array($sortBy, $validSorts)) {
+            $sortBy = 'id';
+        }
+
+        \Log::info('Search term: ' . $search);
+        \Log::info('Status filter: ' . ($statusFilter ?? 'none'));
+
+
+        $events = Event::with(['category', 'admin', 'eventVenue'])->when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('id', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")->orWhere('duration', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('admin', function ($q3) use ($search) {
+                        $q3->where('name', 'like', "%{$search}%");
+                    });
+            });
+        })->when($statusFilter, function ($query, $statusFilter) {
+            $query->withComputedStatus($statusFilter);
+        })
+            ->orderBy($sortBy, $sortOrder)
+            ->paginate(10);
+
         return response()->json([
             'success' => true,
-            'payload' => $events
-        ], 200);
+            'payload' => $events,
+        ]);
     }
 
     //get an event
@@ -170,15 +209,24 @@ class EventController extends Controller
     // get events by a particular location
     public function getEventsByLocation(Location $location)
     {
-        $eventVenues = $location->eventVenues()->with(['event.category', 'venue.seats'])->get();
+        // Step 1: Get all event_venue IDs for the location
+        $eventVenues = $location->eventVenues()
+            ->with([
+                'event:id,title,thumbnail,duration,category_id',
+                'event.category:id,name',
+                'venue:id,venue_name',
+            ])
+            ->get();
 
         $events = [];
 
         foreach ($eventVenues as $ev) {
             $event = $ev->event;
 
-            // Find lowest seat price from this venue
-            $lowestPrice = $ev->venue->seats->min('price');
+            // Step 2: Query minimum seat price only (instead of loading all seats into memory)
+            $seatPrice = DB::table('seats')
+                ->where('venue_id', $ev->venue->id)
+                ->value('price');
 
             $events[] = [
                 'id' => $event->id,
@@ -187,12 +235,10 @@ class EventController extends Controller
                 'duration' => $event->duration,
                 'category' => $event->category->name ?? null,
                 'start_datetime' => $ev->start_datetime,
-                'lowest_price' => $lowestPrice,
+                'lowest_price' => $seatPrice,
             ];
         }
 
-
         return response()->json(['data' => $events]);
     }
-
 }
