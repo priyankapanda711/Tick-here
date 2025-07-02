@@ -70,8 +70,10 @@ export function setupLocationLogic(): void {
       />
     </div>
   `;
-
-    $("#navbar-location-display").html(locationHtml); // if yes, show the selected location in the navbar
+    setTimeout(() => {
+      $("#navbar-location-display").html(locationHtml);
+    }, 1000);
+    // if yes, show the selected location in the navbar
     console.log(loc);
   }
 

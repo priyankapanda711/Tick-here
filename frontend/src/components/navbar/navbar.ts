@@ -16,29 +16,30 @@ export function loadNavbar(): void {
     .then((html) => {
       if (navbarContainer) {
         navbarContainer.innerHTML = html;
-        const login_logout_toggle=document.getElementById("login_logout_toggle");
 
-        const token = localStorage.getItem("auth-token") 
+        const login_logout_toggle = document.getElementById("login_logout_toggle");
 
-        if(token && login_logout_toggle){
-          login_logout_toggle.textContent="Log Out";
-          login_logout_toggle.addEventListener('click',function () {
+        const token = localStorage.getItem("auth-token")
+
+        if (token && login_logout_toggle) {
+          login_logout_toggle.textContent = "Log Out";
+          login_logout_toggle.addEventListener('click', function () {
             localStorage.removeItem("auth-token");
-            localStorage.removeItem("username");
+            localStorage.removeItem("User_details");
             window.location.reload();
           })
         }
-        else{
-          if(login_logout_toggle){
-            login_logout_toggle.textContent="Log In"
-            login_logout_toggle.addEventListener('click',function () {
-              window.location.href="/Login";
-          })
+        else {
+          if (login_logout_toggle) {
+            login_logout_toggle.textContent = "Log In"
+            login_logout_toggle.addEventListener('click', function () {
+              window.location.href = "/Login";
+            })
           }
         }
 
         // User profile dropdown logic
-        const userAvatar = document.getElementById("userAvatar");
+        const userAvatar = document.getElementById("userAvatar") as HTMLDivElement;
         const frameContainer = document.getElementById("frameContainer");
 
         if (userAvatar && frameContainer) {
@@ -116,9 +117,19 @@ export function loadNavbar(): void {
             link.parentElement?.classList.add("active");
           }
         });
+        if (!token && userAvatar) {
+          userAvatar.src = "../../assets/images/default_user_img.png";
+        }
+        else {
+          userAvatar.src = "../../assets/images/userAvatar.png";
+        }
       }
+
     })
     .catch((error) => {
       console.error("Error loading navbar:", error);
     });
+
+
 }
+

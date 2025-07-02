@@ -11,10 +11,17 @@ class Venue extends Model
 
     protected $fillable = ['vanue_name', 'location_id'];
 
+    protected $with = ['location'];
+
     //this is used to establish the relationship between venue and event_venue table
     public function eventVenues()
     {
         return $this->hasMany(EventVenue::class);
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
     }
 
     // for getting price of a seat for an event (/events/locations/{location})
