@@ -22,7 +22,7 @@ sign_up_button?.addEventListener("click", async function (e) {
   console.log(name);
   console.log(email);
   console.log(password);
-  
+
   try {
     const response = await fetch("http://127.0.0.1:8000/api/users", {
       method: "POST",
@@ -35,12 +35,12 @@ sign_up_button?.addEventListener("click", async function (e) {
     const result = await response.json();
 
     console.log(result);
-    
+
     if (!response.ok) {
       alert(`Signup failed: ${result.message || "Unknown error"}`);
     } else {
       alert("Account created successfully!");
-      window.location.href="/Login"
+      window.location.href = "/Login"
     }
   } catch (error) {
     console.error("Signup error:", error);

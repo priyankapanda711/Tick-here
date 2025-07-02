@@ -20,13 +20,13 @@ class StripeController extends Controller
                     'product_data' => [
                         'name' => 'Event Ticket',
                     ],
-                    'unit_amount' => $request->amount * 100, // Rs to paise
+                    'unit_amount' => $request->amount * 100,
                 ],
                 'quantity' => $request->quantity,
             ]],
             'mode' => 'payment',
-            'success_url' => url('/payment-success'),
-            'cancel_url' => url('/payment-cancel'),
+            'success_url' => 'http://127.0.0.1:8080/payment_success',
+            'cancel_url' => 'http://127.0.0.1:8080/payment_cancel',
         ]);
 
         return response()->json(['id' => $session->id]);

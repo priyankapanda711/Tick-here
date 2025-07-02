@@ -15,6 +15,10 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\VenueController;
 use App\Http\Controllers\EventVenuesController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\TicketController;
+use App\Models\Seat;
+use App\Models\Venue;
+use Illuminate\Support\Facades\Log;
 
 // User registration, verification & login
 Route::post('/users', [UserController::class, 'store']);
@@ -67,15 +71,56 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) 
  * USER ROUTES
  */
 
+Route::post('/bookseat', function () {
+    try {
+        $venueid = request('venue_id');
+        $booked_seats = request('seats');
+
+        if (!is_array($booked_seats)) {
+            $booked_seats = json_decode($booked_seats, true);
+            if (!is_array($booked_seats)) {
+                return response()->json(['success' => false, 'error' => 'Invalid seat format'], 400);
+            }
+        }
+
+        $venue = Venue::where("id", $venueid)->first();
+
+        if (!$venue) {
+            return response()->json(['success' => false, 'error' => 'Venue not found'], 404);
+        }
+
+        $seats = Seat::where("venue_id", $venue->id)->get();
+
+        foreach ($seats as $seat) {
+            if (in_array($seat->label, $booked_seats)) {
+                $seat->is_booked = 1;
+                $seat->save();
+            }
+        }
+
+        return response()->json(['success' => true, 'message' => 'Seats booked successfully']);
+    } catch (\Exception $e) {
+        Log::error('Booking error', ['exception' => $e]);
+        return response()->json(['success' => false, 'error' => 'Internal Server Error'], 500);
+    }
+});
 
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+//   'verified' i have commented this middle ware from the below routes because it is not properly implemented
+
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/auth/user/profile', [UserController::class, 'profile']);
     Route::put('/auth/user/profile', [UserController::class, 'update']);
     Route::post('/auth/user/logout', [UserController::class, 'logout']);
     Route::post('/auth/user/change-password', [UserController::class, 'changePassword']);
 
     Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession']);
+
+
+    Route::post('/create-ticket', [TicketController::class, 'store']);
+    Route::post('/gettickets', [TicketController::class, 'getTicketsByUser']);
+    Route::post('/getEventByTicketId', [TicketController::class, 'getEventByTicketId']);
+    Route::post('/cancel-ticket', [TicketController::class, 'cancelticket']);
 });
 
 /**

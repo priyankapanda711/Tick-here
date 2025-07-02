@@ -1,3 +1,4 @@
+
 import { loadNavbar } from "../components/admin_navbar/navbar.js";
 
 interface Event {
@@ -422,4 +423,5 @@ document.addEventListener("DOMContentLoaded", () => {
     // navigate to event form page
     window.location.href = "/admin/create_event/";
   });
+
 });

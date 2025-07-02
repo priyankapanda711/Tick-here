@@ -1,3 +1,4 @@
+
 import { loadNavbar } from "../components/admin_navbar/navbar.js";
 
 interface Venue {
@@ -287,4 +288,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initial load
   fetchVenues(currentPageUrl);
+
 });

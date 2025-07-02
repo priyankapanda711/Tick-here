@@ -10,6 +10,7 @@ class EventVenue extends Model
     use HasFactory;
 
 
+    protected $with = ['venue'];
 
     //this gives all the venue details from the venue table by the venue_id key
     public function venue()
@@ -23,8 +24,6 @@ class EventVenue extends Model
 
         return $this->belongsTo(Location::class, );
     }
-
-    //this gives all the event details (/events/locations/{location})
     public function event()
     {
         return $this->belongsTo(Event::class, );
@@ -34,5 +33,4 @@ class EventVenue extends Model
     {
         return $this->hasMany(Ticket::class);
     }
-
 }

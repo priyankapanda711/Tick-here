@@ -9,15 +9,18 @@ class Ticket extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['user_id', 'event_venue_id', 'ticket_code', 'total_price'];
+
+    protected $with = ['eventVenue', 'ticketSeats'];
 
     public function eventVenue()
     {
-        return $this->belongsTo(EventVenue::class);
+        return $this->belongsTo(EventVenue::class, 'event_venue_id');
     }
 
-    public function event()
+    public function ticketSeats()
     {
-        return $this->eventVenue->event;
+        return $this->hasMany(TicketSeat::class);
     }
 
     public function user()
@@ -29,5 +32,4 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketSeat::class);
     }
-
 }
