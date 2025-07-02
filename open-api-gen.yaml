@@ -173,13 +173,12 @@ paths:
         "401":
           description: Unauthorized
 
-  #todo (not used yet)
-  /events/{event}/venues:
+  /admin/events/{eventId}/venues:
     get:
       summary: Get all venues for a specific event
-      tags: [Events, User, Admin]
+      tags: [Events, Admin]
       parameters:
-        - name: event
+        - name: eventId
           in: path
           required: true
           schema:
@@ -194,11 +193,11 @@ paths:
                 items:
                   $ref: "#/components/schemas/Venue"
 
-  /events/{eventId}/tickets:
+  /admin/events/{eventVenueId}/tickets:
     get:
-      summary: Get all tickets for a specific event(Admin)
+      summary: Get all tickets for a specific eventVenue(Admin)
       parameters:
-        - name: eventId
+        - name: eventVenueId
           in: path
           required: true
           schema:
@@ -227,22 +226,7 @@ paths:
       responses:
         "201": { description: Created }
 
-  /events/{event}:
-    get:
-      summary: Get event
-      tags: [Admin, User, Events]
-      security:
-        - sanctum: []
-      parameters:
-        - name: event
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: Event details
-
+  /admin/events/{event}:
     put:
       summary: Update an event
       tags: [Admin, Events]
@@ -305,6 +289,20 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Event"
+
+  /events/{event}:
+    get:
+      summary: Get event
+      tags: [User, Admin, Events]
+      parameters:
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Event details
 
   # todo categories
   /admin/categories:

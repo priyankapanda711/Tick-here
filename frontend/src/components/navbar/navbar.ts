@@ -24,9 +24,11 @@ export function loadNavbar(): void {
         if (token && login_logout_toggle) {
           login_logout_toggle.textContent = "Log Out";
           login_logout_toggle.addEventListener('click', function () {
+
             localStorage.removeItem("auth-token");
             localStorage.removeItem("User_details");
             window.location.reload();
+
           })
         }
         else {
@@ -35,6 +37,7 @@ export function loadNavbar(): void {
             login_logout_toggle.addEventListener('click', function () {
               window.location.href = "/Login";
             })
+
           }
         }
 
@@ -117,12 +120,23 @@ export function loadNavbar(): void {
             link.parentElement?.classList.add("active");
           }
         });
+
         if (!token && userAvatar) {
           userAvatar.src = "../../assets/images/default_user_img.png";
         }
         else {
           userAvatar.src = "../../assets/images/userAvatar.png";
         }
+
+
+        // implement location modal click logic
+        const modal = $("#location-modal");
+        const locationButton = $(".location-button");
+
+        locationButton.on("click", () => {
+          modal.removeClass("hidden").addClass("flex");
+        });
+
       }
 
     })
