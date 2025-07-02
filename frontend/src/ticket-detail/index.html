@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Ticket Details</title>
+    <link rel="stylesheet" href="/assets/styles/output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<style>
+    .poppins-regular {
+        font-family: "Poppins", sans-serif;
+        font-weight: 400;
+    }
+
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+
+        #ticket-details,
+        #ticket-details * {
+            visibility: visible;
+        }
+
+        #ticket-details {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            margin: 0;
+            padding: 20px;
+            background: white;
+            box-shadow: none;
+            height: auto;
+        }
+
+        #navbar,
+        #print-ticket,
+        #cancel-ticket {
+            display: none !important;
+        }
+    }
+
+
+    .selected {
+        background: linear-gradient(to right, #0A0418, #45006E);
+        color: white;
+        font-size: 12px;
+    }
+</style>
+
+<body class="bg-gray-50 poppins-regular">
+    <div id="navbar"></div>
+    <div id="ticket-details" class="bg-[#E5E7EB] p-6 rounded-lg shadow-lg flex w-full h-[90vh]">
+        <img id="ticket-thumbnail" class="w-[40%] rounded mb-4" />
+        <div class="p-[20px] w-[60%] flex flex-col gap-[10px]">
+            <h1 id="ticket-title" class="text-2xl font-semibold mb-2"></h1>
+            <div class="flex gap-[20px]">
+                <p class="selected inline-block w-auto px-[14px] py-[6px] rounded-[32px]">
+                    <span id="event-duration"></span>
+                </p>
+                <p class="selected inline-block w-auto px-[14px] py-[6px] rounded-[32px]">
+                    <span id="event-category"></span>
+                </p>
+            </div>
+            <p><strong>Time:</strong> <span id="ticket-time"></span></p>
+            <p><strong>Venue:</strong> <span id="ticket-venue"></span></p>
+            <p><strong>Selected Seats:</strong> <span id="ticket-seats"></span></p>
+            <p><strong>Quantity:</strong> <span id="ticket-qty"></span></p>
+            <p
+                class="text-xl text-center rounded-[10px] font-semibold mt-4 bg-[#EAE2FF] border border-[#462F7D] w-[250px] min-w-[250px] px-4 py-2">
+                Total: ₹<span id="ticket-price"></span>
+            </p>
+
+
+            <div class="flex gap-4 mt-6">
+                <button id="print-ticket" class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">
+                    Print Ticket
+                </button>
+                <button id="cancel-ticket" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                    Cancel Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../dist/ticket-detail/ticket-detail.js"></script>
+</body>
+
+</html>

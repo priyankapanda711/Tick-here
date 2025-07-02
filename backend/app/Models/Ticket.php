@@ -22,4 +22,14 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketSeat::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function seats()
+    {
+        return $this->hasMany(TicketSeat::class);
+    }
 }

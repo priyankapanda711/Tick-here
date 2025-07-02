@@ -9,12 +9,19 @@ class Venue extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['vanue_name', 'location_id'];
+    protected $fillable = ['vanue_name', 'location_id', 'max_seats'];
+
+    protected $with = ['location'];
 
     //this is used to establish the relationship between venue and event_venue table
     public function eventVenues()
     {
         return $this->hasMany(EventVenue::class);
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
     }
 
     // for getting price of a seat for an event (/events/locations/{location})
@@ -48,5 +55,11 @@ class Venue extends Model
                 $rowIndex++;
             }
         });
+    }
+
+    // fetch location
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
     }
 }

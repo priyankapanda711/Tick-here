@@ -1,8 +1,92 @@
 import { loadNavbar } from "../Admin/components/admin_navbar/navbar.js";
 declare var ApexCharts: any;
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadNavbar();
+
+function loadEventStats() {
+  const token = localStorage.getItem("admin_token");
+  console.log("Token:", token);
+
+  if (!token) return;
+
+  $.ajax({
+    url: "http://127.0.0.1:8000/api/admin/event-stats",
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+    success: function (response) {
+      if (response.success) {
+        renderCategoryCards(response.data);
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Failed to fetch event stats", xhr.responseText);
+    },
+  });
+}
+
+function renderCategoryCards(stats: any) {
+  const $section = $("section.grid");
+  if ($section.length === 0) return;
+
+  $section.empty(); // Clear existing hardcoded cards
+
+  stats.forEach((item: any) => {
+    const trendClass =
+      item.growth_percentage >= 0 ? "text-green-500" : "text-red-500";
+    const trendSymbol = item.growth_percentage >= 0 ? "↑" : "↓";
+
+    const $card = $(`
+      <div class="w-full max-w-[300px] bg-white rounded-lg shadow p-[16px] text-left">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-lg font-semibold">${item.category}</span>
+          <span class="text-sm text-gray-600">${
+            item.this_week_events
+          } Active Events</span>
+        </div>
+        <div class="flex justify-between items-center mb-1">
+          <span class="text-4xl font-bold">${item.total_events}</span>
+          <span class="text-sm ${trendClass}">${Math.abs(
+      item.growth_percentage
+    )}% ${trendSymbol}</span>
+        </div>
+        <p class="text-xs text-gray-500">Event Bookings</p>
+      </div>
+    `);
+
+    $section.append($card);
+  });
+}
+
+function loadTicketStats() {
+  const token = localStorage.getItem("admin_token");
+  if (!token) return;
+
+  $.ajax({
+    url: "http://127.0.0.1:8000/api/admin/ticket-stats",
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+    success: function (response) {
+      if (response.success) {
+        console.log(response.data);
+
+        renderCategoryChart(response.data);
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Failed to fetch ticket stats", xhr.responseText);
+    },
+  });
+}
+
+function renderCategoryChart(data: any[]) {
+  const categories = data.map((item) => item.category);
+  const ticketCounts = data.map((item) => item.tickets_sold);
+
 
   const options = {
     chart: {
@@ -21,7 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
         columnWidth: "30%",
         distributed: true,
         dataLabels: {
-          position: "middle", // show value on top
+
+          position: "middle",
         },
       },
     },
@@ -47,12 +132,14 @@ document.addEventListener("DOMContentLoaded", () => {
     fill: {
       type: "solid",
       colors: [
-        "#D6BCFA",
-        "#B794F4",
-        "#9F7AEA",
-        "#805AD5",
-        "#6B46C1",
-        "#553C9A",
+
+        "#bcb1d5",
+        "#8f7db9",
+        "#685596",
+        "#483672",
+        "#271551",
+        "#0c0420",
+
       ],
     },
     tooltip: {
@@ -65,28 +152,25 @@ document.addEventListener("DOMContentLoaded", () => {
       offsetY: -12,
       style: {
         fontSize: "12px",
-        colors: ["#45006E"], // purple tone
+
+        colors: ["#45006E"],
+
       },
     },
     series: [
       {
-        name: "Event Bookings",
-        data: [130, 140, 150, 150, 160, 170],
+
+        name: "Tickets Sold",
+        data: ticketCounts,
       },
     ],
     xaxis: {
-      categories: [
-        "Comedy",
-        "Kids",
-        "Music",
-        "Workshop",
-        "Performance",
-        "Sports",
-      ],
+      categories: categories,
       labels: {
         style: {
           fontSize: "12px",
-          colors: "#6B7280", // Tailwind gray-500
+          colors: "#6B7280",
+
         },
       },
       axisTicks: { show: false },
@@ -95,18 +179,50 @@ document.addEventListener("DOMContentLoaded", () => {
     yaxis: {
       show: true,
     },
-   
+
   };
 
   const chart = new ApexCharts(document.querySelector("#myChart"), options);
   chart.render();
 
+}
 
-  //fetch
+document.addEventListener("DOMContentLoaded", () => {
+  loadNavbar();
+
+  // check the admin logged in or not
+  const adminToken = localStorage.getItem("admin_token");
+
+  if (!adminToken) {
+    // Redirect to login page if not logged in
+    window.location.href = "/admin/admin_login/";
+    return;
+  }
+
+  // If token is present, proceed to load dashboard
+
+  // Load event stats
+  loadEventStats();
+
+  // load ticket stats
+  loadTicketStats();
+
+  // create event page logic
+
   const createEventButton = document.getElementById("addEventButton");
   if (createEventButton) {
     createEventButton.addEventListener("click", () => {
       window.location.href = "/admin/create_event/";
     });
   }
+
+
+  // manage event page logic
+  const manageEventButton = document.getElementById("manageEventButton");
+  if (manageEventButton) {
+    manageEventButton.addEventListener("click", () => {
+      window.location.href = "/admin/manage-event/";
+    });
+  }
+
 });

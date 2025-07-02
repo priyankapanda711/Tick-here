@@ -1,4 +1,8 @@
-let adminLoginButton = document.getElementById("sign_in") as HTMLButtonElement;
+
+let adminLoginButton = document.getElementById(
+  "admin_sign_in"
+) as HTMLButtonElement;
+
 
 adminLoginButton?.addEventListener("click", async function (e) {
   e.preventDefault();
@@ -15,26 +19,28 @@ adminLoginButton?.addEventListener("click", async function (e) {
   }
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/auth/admin/login", {
+
+
+    await fetch("http://127.0.0.1:8000/api/auth/admin/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json", // Important to get JSON back
       },
       body: JSON.stringify({ email, password }),
-    });
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Login success:", data);
 
-    if (!response.ok) {
-      const error = await response.json();
-      alert(`Login failed: ${error.message || "Unknown error"}`);
-      return;
-    }
+        // Store the token in local storage
+        localStorage.setItem("admin_token", data.token);
+        window.location.href = "/admin/";
+      })
+      .catch((err) => {
+        console.error("Network or server error:", err);
+      });
 
-    const result = await response.json();
-    console.log("Login success:", result);
-
-    // Example: redirect or store token
-    // localStorage.setItem('token', result.token);
-    // window.location.href = '/dashboard.html';
   } catch (error) {
     console.error("Network or server error:", error);
     alert("Something went wrong. Please try again.");

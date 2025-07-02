@@ -1,9 +1,13 @@
 import { getCountryFlag } from "../../utils/helper.js";
 import { loadEventsForLocation } from "../../main.js";
+import { loadEventsForEventsPage } from "../../events/events.js";
+
+const selected = sessionStorage.getItem("selectedLocation");
 
 // loads/close the modal for location selection
 export function loadLocationModal(): void {
   const modalContainer = $("#location-modal-container");
+  modalContainer.empty();
 
   $.get("/components/location-modal/index.html")
     .done((html) => {
@@ -11,18 +15,20 @@ export function loadLocationModal(): void {
 
       const modal = $("#location-modal");
       const closeModal = $("#close-location-modal");
-      const locationButtons = $(".location-button");
+      const locationButton = $(".location-button");
 
-      locationButtons.on("click", () => {
+      locationButton.on("click", () => {
         modal.removeClass("hidden").addClass("flex");
       });
 
       closeModal.on("click", () => {
-        modal.removeClass("flex").addClass("hidden");
+        if (selected) {
+          modal.removeClass("flex").addClass("hidden");
+        }
       });
 
       modal.on("click", (e) => {
-        if (e.target === modal[0]) {
+        if (e.target === modal[0] && selected) {
           modal.removeClass("flex").addClass("hidden");
         }
       });
@@ -71,11 +77,14 @@ export function setupLocationLogic(): void {
     </div>
   `;
 
-    $("#navbar-location-display").html(locationHtml); // if yes, show the selected location in the navbar
-    console.log(loc);
+
+    setTimeout(() => {
+      $("#navbar-location-display").html(locationHtml); // if yes, show the selected location in the navbar
+    }, 1000);
+
   }
 
-  const searchInput = $("#location-modal input"); //todo binary search
+  const searchInput = $("#location-modal input");
 
   // filter the locations based on the search query
   searchInput.on("input", () => {
@@ -96,11 +105,15 @@ function loadLocations(): void {
       const locations = data.data as Location[];
       const enriched = locations.map((loc) => ({
         ...loc,
-        flag: getCountryFlag(loc.country), // gets the flag based on the country
+        flag: getCountryFlag(loc.country),
       }));
 
       enriched.sort((a, b) => a.city.localeCompare(b.city));
+
+      locationArray.length = 0; // ✅ Clear the array first
       locationArray.push(...enriched);
+
+      console.log(locationArray); // Should show unique items only
       renderLocationGrid(locationArray);
     },
     error: function () {
@@ -131,6 +144,9 @@ function renderLocationGrid(locations: Location[]): void {
 function handleLocationSelect(loc: Location): void {
   sessionStorage.setItem("selectedLocation", JSON.stringify(loc));
 
+  // Trigger storage event manually so other tabs/pages can react
+  localStorage.setItem("locationChangeTrigger", Date.now().toString());
+
   const locationHtml = `
     <div class="w-[10.313rem] flex flex-row items-center justify-end gap-[0.375rem] cursor-pointer ">
       <img
@@ -152,55 +168,5 @@ function handleLocationSelect(loc: Location): void {
 
   //  Immediately load events for selected location
   loadEventsForLocation();
-}
-
-// shows the selected location in the navbar even if the page got refreshed
-export function showSelectedLocationInNavbar(): void {
-  const selected = sessionStorage.getItem("selectedLocation");
-
-  let locationHtml = "";
-
-  if (selected) {
-    const loc: Location = JSON.parse(selected);
-
-    locationHtml = `
-      <div class="w-[10.313rem] flex flex-row items-center justify-end gap-[0.375rem] cursor-pointer location-button ml-auto">
-        <img
-          class="w-[1.3rem] relative h-[1.3rem] overflow-hidden shrink-0"
-          alt=""
-          src="../../assets/images/Location.png"
-        />
-        <div class="relative text-base">${loc.city}</div>
-        <img
-          class="w-[1.3rem] relative h-[1.125rem] overflow-hidden shrink-0"
-          alt=""
-          src="${loc.flag}"
-        />
-      </div>
-    `;
-  } else {
-    // 🆕 Show "Choose Location" by default
-    locationHtml = `
-      <div class="w-[10.313rem] flex flex-row items-center justify-end gap-[0.375rem] cursor-pointer location-button ml-auto">
-        <img
-          class="w-[1.3rem] relative h-[1.3rem] overflow-hidden shrink-0"
-          alt=""
-          src="../../assets/images/Location.png"
-        />
-        <div class="relative text-base text-gray-400 italic">Choose Location</div>
-        <img
-          class="w-[1.3rem] relative h-[1.125rem] overflow-hidden shrink-0"
-          alt=""
-          src="https://flagsapi.com/🌍/flat/24.png"
-        />
-      </div>
-    `;
-  }
-
-  $("#navbar-location-display").html(locationHtml);
-
-  // ✅ Re-attach location-button click listener (for both cases)
-  $(".location-button").on("click", () => {
-    $("#location-modal").removeClass("hidden").addClass("flex");
-  });
+  loadEventsForEventsPage();
 }

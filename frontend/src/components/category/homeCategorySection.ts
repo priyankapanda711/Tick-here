@@ -35,7 +35,7 @@ export async function renderHomeCategories(
 
     container.html(html);
 
-    // this click event triggers after the category section rendered and when the user clicks on any category he/she redirects to the events page withe the selected category
+    // this click event triggers after the category section rendered and when the user clicks on any category he/she redirects to the events page with the selected category
     $(".home-category").on("click", function () {
       const category = $(this).data("category");
       if (category) {

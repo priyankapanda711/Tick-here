@@ -11,7 +11,7 @@ class LocationController extends Controller
     //get all the locations(admin)
     public function index()
     {
-        $location = Location::get();
+        $location = Location::orderBy('id', 'asc')->paginate(10);
         return response()->json([
             'success' => true,
             'message' => "location fetched",

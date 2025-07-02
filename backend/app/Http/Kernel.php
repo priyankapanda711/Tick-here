@@ -41,7 +41,6 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            EnsureFrontendRequestsAreStateful::class, // this is for session/cookie auth (for SPAs)
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],

@@ -1,18 +1,23 @@
 import { loadNavbar } from "../components/admin_navbar/navbar.js";
 
 type VenueEntry = {
+
   id: number;
+
   venue: string;
   date: string;
   time: string;
 };
 
+
 let savedVenues: VenueEntry[] = [];
 let currentVenueId = 0;
 let selectedImage: File | null = null;
 
+
 document.addEventListener("DOMContentLoaded", () => {
   loadNavbar();
+
 
   const venueBlock = document.getElementById("venueBlock") as HTMLDivElement;
   const savedVenuesList = document.getElementById("savedVenuesList") as HTMLDivElement;
@@ -21,9 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeVenueBtn = document.getElementById("closeVenueBtn") as HTMLButtonElement;
   const cancelBtn = document.querySelector('button.border.border-gray-400') as HTMLButtonElement;
 
+
   const venueInput = document.getElementById("venue") as HTMLSelectElement;
   const dateInput = document.getElementById("to-date") as HTMLInputElement;
   const timeInput = document.getElementById("time") as HTMLInputElement;
+
 
   const imageUploadArea = document.querySelector('.border-dashed') as HTMLDivElement;
   const imageLink = imageUploadArea.querySelector('a') as HTMLAnchorElement;
@@ -57,10 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
   //Venue
   toggleVenueBtn.addEventListener("click", () => {
     venueBlock.classList.remove("hidden");
+
   });
 
   closeVenueBtn.addEventListener("click", () => {
     venueBlock.classList.add("hidden");
+
     clearVenueForm();
   });
 
@@ -82,10 +91,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+
     const title = (document.getElementById("title") as HTMLInputElement).value;
     const description = (document.getElementById("description") as HTMLTextAreaElement).value;
     const category = (document.getElementById("category") as HTMLSelectElement).value;
     const duration = (document.getElementById("duration") as HTMLInputElement).value;
+
 
     if (!title || !description || !category || !duration) {
       alert("Please fill all required fields.");
@@ -159,12 +170,14 @@ document.addEventListener("DOMContentLoaded", () => {
     savedVenuesList.innerHTML = "";
 
     window.location.href = "/admin/manage-events";
+
   });
 
   function trySaveVenue(): boolean {
     const venue = venueInput.value;
     const date = dateInput.value;
     const time = timeInput.value;
+
 
     if (!venue || venue === "Select" || !date || !time) {
       alert("Please fill all venue fields.");
@@ -187,24 +200,31 @@ document.addEventListener("DOMContentLoaded", () => {
     venueInput.value = "Select";
     dateInput.value = "";
     timeInput.value = "09:00";
+
   }
 
   function renderSavedVenues() {
     savedVenuesList.innerHTML = "";
 
+
     savedVenues.forEach((entry) => {
+
       const container = document.createElement("div");
       container.className = "border border-gray-300 bg-white rounded-md p-4 flex justify-between items-center shadow";
 
       const details = document.createElement("div");
       details.innerHTML = `
+
         <p class="font-medium text-sm mb-1">${entry.venue}</p>
+
         <p class="text-sm text-gray-600">Date: ${entry.date}</p>
         <p class="text-sm text-gray-600">Time: ${entry.time}</p>
       `;
 
+
       const actions = document.createElement("div");
       actions.className = "flex gap-4";
+
 
       const editBtn = document.createElement("button");
       editBtn.textContent = "Edit";
@@ -214,10 +234,13 @@ document.addEventListener("DOMContentLoaded", () => {
         dateInput.value = entry.date;
         timeInput.value = entry.time;
 
+
         savedVenues = savedVenues.filter((v) => v.id !== entry.id);
+
         renderSavedVenues();
         venueBlock.classList.remove("hidden");
       });
+
 
       const deleteBtn = document.createElement("button");
       deleteBtn.textContent = "Delete";
@@ -232,6 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       container.appendChild(details);
       container.appendChild(actions);
+
       savedVenuesList.appendChild(container);
     });
   }

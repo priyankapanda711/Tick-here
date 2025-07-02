@@ -57,7 +57,7 @@ class VenueSeeder extends Seeder
 
             if ($location) {
                 foreach ($venueNames as $venueName) {
-                    $maxSeats = rand(500, 2000);  // randomly pics a value for max_seats
+                    $maxSeats = rand(300, 600);  // randomly pics a value for max_seats
                     $price = rand(500, 5000);
 
                     $venue = Venue::create([

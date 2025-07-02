@@ -22,19 +22,16 @@ if (booking_details_string) {
                     const userObj = userdetails ? JSON.parse(userdetails) : {};
                     const ticketObj = ticket_data ? JSON.parse(ticket_data) : {};
 
-                    ticketObj.seats = JSON.parse(ticketObj.seats); // ✅ convert string to array
-                    ticketObj.eventID = parseInt(ticketObj.eventID); // ✅ ensure integer
-                    ticketObj.venue_id = parseInt(ticketObj.venue_id); // ✅ ensure integer
-                    ticketObj.price = parseFloat(ticketObj.price); // ✅ ensure number
+                    ticketObj.seats = JSON.parse(ticketObj.seats);
+                    ticketObj.eventID = parseInt(ticketObj.eventID);
+                    ticketObj.venue_id = parseInt(ticketObj.venue_id);
+                    ticketObj.price = parseFloat(ticketObj.price);
 
                     const user_ticket_details = {
                         ...userObj,
                         ...ticketObj
                     };
                     console.log(user_ticket_details);
-
-
-
 
                     fetch('http://127.0.0.1:8000/api/create-ticket', {
                         method: "POST",

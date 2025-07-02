@@ -1,12 +1,12 @@
 import { loadNavbar } from "./components/navbar/navbar.js";
 import { loadFooter } from "./components/footer/footer.js";
 import { loadContactModal } from "./components/contact-modal/contactModal.js";
-import {
-  loadLocationModal,
-  showSelectedLocationInNavbar,
-} from "./components/location-modal/locationModal.js";
+import { loadLocationModal } from "./components/location-modal/locationModal.js";
 import { createEventCard } from "./components/event-card/eventCard.js";
 import { renderHomeCategories } from "./components/category/homeCategorySection.js";
+import { initLoader, hideLoader, showLoader } from "./components/loader/loader.js";
+
+initLoader();
 
 declare const Swiper: any;
 
@@ -16,7 +16,9 @@ export function loadEventsForLocation(): void {
   if (!selected) return;
 
   const location = JSON.parse(selected);
+
   console.log("Selected location:", location);
+  showLoader();
 
   let url = `http://127.0.0.1:8000/api/events/locations/${location.id}`;
 
@@ -26,6 +28,7 @@ export function loadEventsForLocation(): void {
     success: async function (res: any) {
       const container = $(".event-card-grid");
       container.empty();
+      hideLoader();
 
       if (!res.data || res.data.length === 0) {
         container.append(
@@ -78,7 +81,6 @@ export function loadEventsForLocation(): void {
 
 document.addEventListener("DOMContentLoaded", () => {
   loadEventsForLocation();
-  showSelectedLocationInNavbar();
   loadLocationModal();
   loadNavbar();
   loadFooter();
