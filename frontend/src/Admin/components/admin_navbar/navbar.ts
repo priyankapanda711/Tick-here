@@ -17,12 +17,14 @@ export function loadNavbar(): void {
     .then((html) => {
       navbarContainer.innerHTML = html;
 
+
       // Profile dropdown logic
       const userAvatar = document.getElementById("userAvatar");
       const frameContainer = document.getElementById("frameContainer");
 
       if (userAvatar && frameContainer) {
         let isVisible = false;
+
 
         userAvatar.addEventListener("click", (e) => {
           e.stopPropagation();
@@ -48,6 +50,7 @@ export function loadNavbar(): void {
           }
         });
       }
+
 
       // Nav logic for admin tabs (Dashboard, Venue, Location)
       const navTabs = document.querySelectorAll(".nav-tab");
@@ -85,6 +88,7 @@ export function loadNavbar(): void {
         });
       });
 
+
       // Optional: highlight current tab based on URL
       const currentPath = window.location.pathname;
 
@@ -92,6 +96,7 @@ export function loadNavbar(): void {
         const text = tab.textContent?.trim().toLowerCase();
 
         const match =
+
           (text === "dashboard" &&
             (currentPath === "/admin/" ||
               currentPath.includes("/create_event") ||
@@ -101,6 +106,7 @@ export function loadNavbar(): void {
 
         if (match) {
           tab.classList.remove("text-black");
+
           tab.classList.add(
             "bg-gradient-to-r",
             "from-[#46006e]",
@@ -109,6 +115,7 @@ export function loadNavbar(): void {
           );
         }
       });
+
 
       // add logout functionality
       $("#logoutBtn").on("click", function () {
@@ -138,8 +145,10 @@ export function loadNavbar(): void {
           },
         });
       });
+
     })
     .catch((error) => {
       console.error("Error loading navbar:", error);
     });
 }
+
