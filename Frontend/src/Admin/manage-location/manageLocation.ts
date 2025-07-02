@@ -1,19 +1,15 @@
 import { loadNavbar } from "../components/admin_navbar/navbar.js";
 
-interface Venue {
+interface Location {
   id: number;
-  venue_name: string;
-  location_id: number;
-  max_seats: number;
-  price: number;
-  location: {
-    city: string;
-  };
+  country: string;
+  state: string;
+  city: string;
 }
 
-let currentPageUrl = "http://127.0.0.1:8000/api/admin/venues";
+let currentPageUrl = "http://127.0.0.1:8000/api/admin/locations";
 
-function fetchVenues(url: string) {
+function fetchLocations(url: string) {
   const token = localStorage.getItem("admin_token");
   if (!token) return;
 
@@ -25,21 +21,20 @@ function fetchVenues(url: string) {
       Accept: "application/json",
     },
     success: function (res) {
-      const venues: Venue[] = res.data.data;
-      const tbody = $("#venue-table-body");
+      const locations: Location[] = res.data.data;
+      const tbody = $("#location-table-body");
       tbody.empty();
 
-      venues.forEach((venue: Venue) => {
+      locations.forEach((location: Location) => {
         tbody.append(`
-        <div data-venue-id="${venue.id}" class="flex items-center w-[56.5rem] border-t border-gray-200 bg-white venue-row">
-          <div data-id="${venue.id}" class="w-[7rem] p-3 justify-center">${venue.id}</div>
-          <div class="venue-name w-[15rem] p-3 justify-center">${venue.venue_name}</div>
-          <div class="venue-location w-[18rem] p-3 justify-center" data-location-id="${venue.location_id}">${venue.location.city}</div>
-          <div class="venue-seats w-[10rem] p-3 justify-center">${venue.max_seats}</div>
-          <div class="venue-cost w-[10rem] p-3 justify-center">${venue.price}</div>
+        <div data-location-id="${location.id}" class="flex items-center w-[56.5rem] border-t border-gray-200 bg-white location-row">
+          <div data-id="${location.id}" class="w-[7rem] p-3 justify-center">${location.id}</div>
+          <div class="country w-[15rem] p-3 justify-center">${location.country}</div>
+          <div class="state w-[18rem] p-3 justify-center">${location.state}</div>
+          <div class="city w-[10rem] p-3 justify-center">${location.city}</div>
           <div class="w-[12rem] p-3 flex gap-2 action-buttons justify-center">
-            <button class="editVenueBtn bg-gradient-to-r from-[#46006e] to-[#0a0417] text-white h-[1.625rem] w-16  px-3 py-1 flex justify-center items-center rounded edit-btn">Edit</button>
-            <button class="deleteVenueBtn border border-[#191970] text-xs text-[#404040] flex items-center px-3 py-1 rounded h-[1.625rem] delete-btn">Delete</button>
+            <button class="editLocationBtn bg-gradient-to-r from-[#46006e] to-[#0a0417] text-white h-[1.625rem] w-16  px-3 py-1 flex justify-center items-center rounded edit-btn">Edit</button>
+            <button class="deleteLocationBtn border border-[#191970] text-xs text-[#404040] flex items-center px-3 py-1 rounded h-[1.625rem] delete-btn">Delete</button>
           </div>
         </div>`);
       });
@@ -51,7 +46,7 @@ function fetchVenues(url: string) {
       alert(
         errors
           ? Object.values(errors).flat().join("\n")
-          : "Failed to fetch venues."
+          : "Failed to fetch locations."
       );
     },
   });
@@ -103,18 +98,18 @@ function updatePagination(payload: any) {
 document.addEventListener("DOMContentLoaded", () => {
   loadNavbar();
 
-  fetchVenues(currentPageUrl);
+  fetchLocations(currentPageUrl);
 
   let editMode = false;
-  let editingVenueId: number | null = null;
+  let editingLocationId: number | null = null;
 
   // Load form HTML once
   let formLoaded = false;
 
-  function loadVenueForm(callback?: () => void) {
+  function loadLocationForm(callback?: () => void) {
     if (!formLoaded) {
-      $("#create-venue-wrapper").load(
-        "/admin/components/create_venue/index.html",
+      $("#create-location-wrapper").load(
+        "/admin/components/create_location/index.html",
         function () {
           formLoaded = true;
           bindFormEvents(); // bind after load
@@ -127,39 +122,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function bindFormEvents() {
-    $("#cancelVenueCreate").on("click", function () {
-      $("#venue-form-container").addClass("hidden");
+    $("#cancelLocationCreate").on("click", function () {
+      $("#location-form-container").addClass("hidden");
       resetForm();
     });
 
-    $("#createVenueBtn").on("click", function () {
+    $("#createLocationBtn").on("click", function () {
       const token = localStorage.getItem("admin_token");
       if (!token) return;
 
-      const venueData = {
-        venue_name: $("#venue-name").val(),
-        location_id: $("#venue-location").data("location-id"),
-        price: $("#venue-cost").val(),
-        max_seats: $("#venue-seats").val(),
+      const locationData = {
+        country: $("#country").val(),
+        state: $("#state").val(),
+        city: $("#city").val(),
       };
 
-      if (editMode && editingVenueId !== null) {
-        console.log("Saving changes for ID:", editingVenueId, venueData);
+      if (editMode && editingLocationId !== null) {
+        console.log("Saving changes for ID:", editingLocationId, locationData);
 
         // Send PUT/PATCH to update
         $.ajax({
-          url: `http://127.0.0.1:8000/api/admin/venues/${editingVenueId}`,
+          url: `http://127.0.0.1:8000/api/admin/locations/${editingLocationId}`,
           method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
           },
-          data: venueData,
+          data: locationData,
           success: function (res) {
-            alert("Venue updated successfully!");
+            alert("location updated successfully!");
             resetForm();
-            $("#venue-form-container").addClass("hidden");
-            fetchVenues(currentPageUrl);
+            $("#location-form-container").addClass("hidden");
+            fetchLocations(currentPageUrl);
           },
           error: function (xhr) {
             const errors = xhr.responseJSON?.errors;
@@ -171,22 +165,22 @@ document.addEventListener("DOMContentLoaded", () => {
           },
         });
       } else {
-        console.log("Creating new venue:", venueData);
+        console.log("Creating new location:", locationData);
 
         // Send POST to create
         $.ajax({
-          url: "`http://127.0.0.1:8000/api/admin/venues",
+          url: "`http://127.0.0.1:8000/api/admin/locations",
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
           },
-          data: venueData,
+          data: locationData,
           success: function (res) {
-            alert("Venue created successfully!");
+            alert("location created successfully!");
             resetForm();
-            $("#venue-form-container").addClass("hidden");
-            fetchVenues(currentPageUrl);
+            $("#location-form-container").addClass("hidden");
+            fetchLocations(currentPageUrl);
           },
           error: function (xhr) {
             const errors = xhr.responseJSON?.errors;
@@ -203,57 +197,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function resetForm() {
     editMode = false;
-    editingVenueId = null;
-    $("#createVenueBtn").text("Create");
-    $("#venue-name").val("");
-    $("#venue-location").val("").data("location-id", "");
-    $("#venue-cost").val("");
-    $("#venue-seats").val("");
+    editingLocationId = null;
+    $("#createLocationBtn").text("Create");
+    $("#country").val("");
+    $("#state").val("");
+    $("#city").val("");
   }
 
-  // Add New Venue button clicked
-  $("#addVenueBtn").on("click", function () {
-    loadVenueForm(() => {
+  // Add New location button clicked
+  $("#addLocationBtn").on("click", function () {
+    console.log("clicked");
+
+    loadLocationForm(() => {
       resetForm();
-      $("#createVenueBtn").text("Create");
-      $("#venue-form-container").removeClass("hidden");
+      $("#createLocationBtn").text("Create");
+      $("#location-form-container").removeClass("hidden");
     });
   });
 
   // Handle Edit button click (example event delegation)
-  $("#venue-table-body").on("click", ".editVenueBtn", function () {
-    const row = $(this).closest(".venue-row");
-    editingVenueId = row.data("venue-id");
+  $("#location-table-body").on("click", ".editLocationBtn", function () {
+    const row = $(this).closest(".location-row");
+    editingLocationId = row.data("location-id");
 
-    const name = row.find(".venue-name").text().trim();
-    const location = row.find(".venue-location").text().trim();
-    const locationId = row.find(".venue-location").data("location-id");
-    const cost = row.find(".venue-cost").text().trim();
-    const seats = row.find(".venue-seats").text().trim();
+    const country = row.find(".country").text().trim();
+    const state = row.find(".state").text().trim();
+    const city = row.find(".city").text().trim();
 
-    loadVenueForm(() => {
+    loadLocationForm(() => {
       editMode = true;
-      $("#venue-name").val(name);
-      $("#venue-location").val(location).data("location-id", locationId);
-      $("#venue-cost").val(cost);
-      $("#venue-seats").val(seats);
+      $("#country").val(country);
+      $("#state").val(state);
+      $("#city").val(city);
 
-      $("#createVenueBtn").text("Save");
-      $("#venue-form-container").removeClass("hidden");
+      $("#createLocationBtn").text("Save");
+      $("#location-form-container").removeClass("hidden");
     });
   });
 
   // Handle Delete button click
-  $("#venue-table-body").on("click", ".deleteVenueBtn", function () {
+  $("#location-table-body").on("click", ".deleteLocationBtn", function () {
     const token = localStorage.getItem("admin_token");
     if (!token) return;
 
-    const row = $(this).closest(".venue-row");
-    const venueId = row.data("venue-id");
+    const row = $(this).closest(".location-row");
+    const locationId = row.data("location-id");
 
-    if (confirm("Are you sure you want to delete this venue?")) {
+    if (confirm("Are you sure you want to delete this location?")) {
       $.ajax({
-        url: `http://127.0.0.1:8000/api/admin/venues//${venueId}`,
+        url: `http://127.0.0.1:8000/api/admin/locations//${locationId}`,
         type: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -261,8 +253,8 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         success: function (response, status, xhr) {
           if (xhr.status === 204) {
-            alert("Venue deleted.");
-            fetchVenues(currentPageUrl); // Reload updated venue list
+            alert("location deleted.");
+            fetchLocations(currentPageUrl); // Reload updated location list
           } else {
             alert("Unexpected response.");
           }
@@ -281,10 +273,10 @@ document.addEventListener("DOMContentLoaded", () => {
     "#firstPage, #prevPage, #nextPage, #lastPage",
     function () {
       const url = $(this).data("url");
-      if (url) fetchVenues(url);
+      if (url) fetchLocations(url);
     }
   );
 
   // Initial load
-  fetchVenues(currentPageUrl);
+  fetchLocations(currentPageUrl);
 });

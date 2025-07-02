@@ -9,6 +9,7 @@ class Ticket extends Model
 {
     use HasFactory;
 
+
     public function eventVenue()
     {
         return $this->belongsTo(EventVenue::class);
@@ -19,6 +20,14 @@ class Ticket extends Model
         return $this->eventVenue->event;
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
+    public function seats()
+    {
+        return $this->hasMany(TicketSeat::class);
+    }
 
 }

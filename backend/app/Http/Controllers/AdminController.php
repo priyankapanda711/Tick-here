@@ -171,17 +171,16 @@ class AdminController extends Controller
 
     public function getTicketStats()
     {
-        $startOfWeek = Carbon::now()->copy()->startOfWeek();
-        $endOfWeek = Carbon::now()->copy()->endOfWeek();
+        // $startOfWeek = Carbon::now()->copy()->startOfWeek();
+        // $endOfWeek = Carbon::now()->copy()->endOfWeek();
 
         $categories = EventCategory::all();
         $result = [];
 
         foreach ($categories as $category) {
-            $ticketsSold = Ticket::whereBetween('created_at', [$startOfWeek, $endOfWeek])
-                ->whereHas('eventVenue.event', function ($q) use ($category) {
-                    $q->where('category_id', $category->id);
-                })->where('status', 'booked')->count();
+            $ticketsSold = Ticket::whereHas('eventVenue.event', function ($q) use ($category) {
+                $q->where('category_id', $category->id);
+            })->where('status', 'booked')->count();
 
             $result[] = [
                 'category' => $category->name,

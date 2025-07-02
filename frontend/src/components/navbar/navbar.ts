@@ -16,24 +16,25 @@ export function loadNavbar(): void {
     .then((html) => {
       if (navbarContainer) {
         navbarContainer.innerHTML = html;
-        const login_logout_toggle=document.getElementById("login_logout_toggle");
+        const login_logout_toggle = document.getElementById(
+          "login_logout_toggle"
+        );
 
-        const token = localStorage.getItem("auth-token") 
+        const token = localStorage.getItem("auth-token");
 
-        if(token && login_logout_toggle){
-          login_logout_toggle.textContent="Log Out";
-          login_logout_toggle.addEventListener('click',function () {
+        if (token && login_logout_toggle) {
+          login_logout_toggle.textContent = "Log Out";
+          login_logout_toggle.addEventListener("click", function () {
             localStorage.removeItem("auth-token");
             localStorage.removeItem("username");
             window.location.reload();
-          })
-        }
-        else{
-          if(login_logout_toggle){
-            login_logout_toggle.textContent="Log In"
-            login_logout_toggle.addEventListener('click',function () {
-              window.location.href="/Login";
-          })
+          });
+        } else {
+          if (login_logout_toggle) {
+            login_logout_toggle.textContent = "Log In";
+            login_logout_toggle.addEventListener("click", function () {
+              window.location.href = "/Login";
+            });
           }
         }
 
@@ -115,6 +116,14 @@ export function loadNavbar(): void {
             indicator.style.left = `${rect.left - parentRect.left}px`;
             link.parentElement?.classList.add("active");
           }
+        });
+
+        // implement location modal click logic
+        const modal = $("#location-modal");
+        const locationButton = $(".location-button");
+
+        locationButton.on("click", () => {
+          modal.removeClass("hidden").addClass("flex");
         });
       }
     })

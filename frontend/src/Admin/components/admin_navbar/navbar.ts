@@ -78,9 +78,10 @@ export function loadNavbar(): void {
           const text = (tab.textContent || "").trim().toLowerCase();
 
           if (text === "dashboard") window.location.href = "/admin/";
-          else if (text === "venue") window.location.href = "/admin/venue";
+          else if (text === "venue")
+            window.location.href = "/admin/manage-venue";
           else if (text === "location")
-            window.location.href = "/admin/location";
+            window.location.href = "/admin/manage-location";
         });
       });
 
@@ -94,9 +95,9 @@ export function loadNavbar(): void {
           (text === "dashboard" &&
             (currentPath === "/admin/" ||
               currentPath.includes("/create_event") ||
-              currentPath.includes("/manage_event"))) ||
-          (text === "venue" && currentPath.includes("/venue")) ||
-          (text === "location" && currentPath.includes("/location"));
+              currentPath.includes("/manage-event"))) ||
+          (text === "venue" && currentPath.includes("venue")) ||
+          (text === "location" && currentPath.includes("location"));
 
         if (match) {
           tab.classList.remove("text-black");

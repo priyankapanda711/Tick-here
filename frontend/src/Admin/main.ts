@@ -71,6 +71,8 @@ function loadTicketStats() {
     },
     success: function (response) {
       if (response.success) {
+        console.log(response.data);
+
         renderCategoryChart(response.data);
       }
     },
@@ -192,11 +194,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // load ticket stats
   loadTicketStats();
 
-  //fetch
+  // create event page logic
   const createEventButton = document.getElementById("addEventButton");
   if (createEventButton) {
     createEventButton.addEventListener("click", () => {
       window.location.href = "/admin/create_event/";
+    });
+  }
+
+  // manage event page logic
+  const manageEventButton = document.getElementById("manageEventButton");
+  if (manageEventButton) {
+    manageEventButton.addEventListener("click", () => {
+      window.location.href = "/admin/manage-event/";
     });
   }
 });

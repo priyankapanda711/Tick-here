@@ -27,7 +27,6 @@ Route::post('/auth/admin/login', [AdminController::class, 'login']);
 
 // Public Data
 Route::get('/events/{event}', [EventController::class, 'getEvent']); // Get event details
-Route::get('/events/{event}/venues', [EventVenuesController::class, 'getVenuesByEvent']); // Venues for an event
 
 Route::get('/locations', [LocationController::class, 'index']); // Get all locations
 Route::get('/events/locations/{location}', [EventController::class, 'getEventsByLocation']); // all Events for a location
@@ -94,11 +93,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // Events
-    Route::post('/', [EventController::class, 'index']); // Get all events
-    Route::post('/create-event', [EventController::class, 'create']);
-    Route::delete('/events/{event}', [EventController::class, 'delete']);
-    Route::put('/events/{event}', [EventController::class, 'update']);
-    Route::get('/events/{eventId}/tickets', [EventVenuesController::class, 'getTicketsByEvent']);
+    Route::get('/admin/events', [EventController::class, 'index']); // Get all events
+    Route::post('/admin/create-event', [EventController::class, 'create']);
+    Route::delete('/admin/events/{event}', [EventController::class, 'delete']);
+    Route::put('/admin/events/{event}', [EventController::class, 'update']);
+    Route::get('/admin/events/{eventId}/venues', [EventVenuesController::class, 'getVenuesByEvent']); // Venues for an event
+    Route::get('/admin/events/{eventVenueId}/tickets', [EventVenuesController::class, 'getTicketsByEventVenue']);
 
     // Locations
     Route::post('/admin/locations', [LocationController::class, 'create']);
