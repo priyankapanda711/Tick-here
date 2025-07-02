@@ -7,10 +7,13 @@ use App\Models\EventVenue;
 use App\Models\Seat;
 use App\Models\Ticket;
 use App\Models\TicketSeat;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\Console\Input\Input;
+use App\Mail\TicketConfirmationMail;
 
 class TicketController extends Controller
 {
@@ -37,7 +40,6 @@ class TicketController extends Controller
             // Generate unique ticket code
             $ticketCode = 'EVENTIX-' . Str::upper(Str::random(10));
 
-
             // Create the ticket
             $ticket = Ticket::create([
                 'user_id' => $validated['id'],
@@ -47,24 +49,42 @@ class TicketController extends Controller
             ]);
 
             $venueid = $request->input('venue_id');
-
             $booked_seats = $request->input('seats');
 
             if (!is_array($booked_seats)) {
                 $booked_seats = json_decode($booked_seats, true);
             }
 
-            foreach ($booked_seats as $seat) {
-                $seat = Seat::where('venue_id', $venueid)->where('label', $seat)->first();
+            foreach ($booked_seats as $seatLabel) {
+                $seat = Seat::where('venue_id', $venueid)->where('label', $seatLabel)->first();
                 if ($seat) {
                     TicketSeat::create([
                         "ticket_id" => $ticket->id,
                         "seat_id" => $seat->id
                     ]);
                 } else {
-                    Log::warning("Seat label not found: " . $seat);
+                    Log::warning("Seat label not found: " . $seatLabel);
                 }
             }
+
+            // Send confirmation email
+            $user = User::find($validated['id']);
+            $seat_ids = TicketSeat::where('ticket_id', $ticket->id)->pluck('seat_id');
+            $seat_labels = Seat::whereIn('id', $seat_ids)->pluck('label')->toArray();
+
+            $ticketDetails = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'event' => $eventVenue->event->title ?? 'Event',
+                'venue' => $eventVenue->venue->venue_name ?? 'Venue',
+                'date' => $eventVenue->start_date_time ?? now()->toDateString(),
+                'seats' => $seat_labels,
+                'price' => $ticket->total_price,
+                'thumbnail' => $eventVenue->event->thumbnail ?? '',
+            ];
+
+            Mail::to($user->email)->send(new TicketConfirmationMail($ticketDetails));
+
             // Return success response
             return response()->json([
                 'success' => true,
@@ -84,6 +104,7 @@ class TicketController extends Controller
             ], 500);
         }
     }
+
 
     public function getTicketsByUser()
     {

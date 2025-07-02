@@ -77,9 +77,11 @@ export function setupLocationLogic(): void {
     </div>
   `;
 
+
     setTimeout(() => {
       $("#navbar-location-display").html(locationHtml); // if yes, show the selected location in the navbar
     }, 1000);
+
   }
 
   const searchInput = $("#location-modal input");

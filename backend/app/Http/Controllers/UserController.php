@@ -19,7 +19,11 @@ class UserController extends Controller
                 'password' => 'required|min:8'
             ]);
         } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+            $res = [
+                "message" => "Username or Password is incorrect!",
+                "code" => 422
+            ];
+            return response()->json($res);
         }
 
         $user = User::where('email', $data['email'])->first();

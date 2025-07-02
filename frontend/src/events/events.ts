@@ -4,6 +4,8 @@ import { loadContactModal } from "../components/contact-modal/contactModal.js";
 import { loadLocationModal } from "../components/location-modal/locationModal.js";
 import { renderTagCategories } from "../components/category/tagCategorySection.js";
 import { createEventCard } from "../components/event-card/eventCard.js";
+import { initLoader, showLoader, hideLoader } from "../components/loader/loader.js";
+initLoader();
 
 // Linear search function for events by title
 function linearSearch(events: any[], searchTerm: string): any[] {
@@ -27,7 +29,8 @@ export function loadEventsForEventsPage(
   if (!selected) return;
 
   const location = JSON.parse(selected);
-  const now = new Date();
+
+  showLoader();
 
   $.ajax({
     url: `http://127.0.0.1:8000/api/events/locations/${location.id}`,
@@ -108,6 +111,7 @@ export function loadEventsForEventsPage(
           </div>
         `);
       }
+      hideLoader();
     },
     error: function () {
       console.error("Failed to load events.");

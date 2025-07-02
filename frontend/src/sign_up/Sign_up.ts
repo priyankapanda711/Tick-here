@@ -1,5 +1,8 @@
+import { initLoader, showLoader, hideLoader } from "../components/loader/loader.js";
+
 const sign_up_button = document.getElementById("sign_up") as HTMLButtonElement;
-const loader = document.getElementById("loader") as HTMLDivElement;
+
+initLoader();
 
 sign_up_button?.addEventListener("click", async function (e) {
   e.preventDefault();
@@ -18,11 +21,23 @@ sign_up_button?.addEventListener("click", async function (e) {
     return;
   }
 
-  console.log("response gone");
+  console.log("request");
   console.log(name);
   console.log(email);
   console.log(password);
 
+
+  if (!email.includes("@gmail.com")) {
+    alert("Not a valid Email");
+    return;
+  }
+
+  if (password.length < 8) {
+    alert("Minimum 8 digit password required");
+    return;
+  }
+
+  showLoader();
   try {
     const response = await fetch("http://127.0.0.1:8000/api/users", {
       method: "POST",
@@ -46,4 +61,5 @@ sign_up_button?.addEventListener("click", async function (e) {
     console.error("Signup error:", error);
     alert("Something went wrong. Please try again later.");
   }
+  hideLoader();
 });
