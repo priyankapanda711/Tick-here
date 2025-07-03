@@ -193,4 +193,20 @@ class AdminController extends Controller
             'data' => $result
         ]);
     }
+    // Return all active admins
+    public function activeAdmins()
+    {
+        $admins = User::where('role', 'admin')
+                      ->where('is_active', true)
+                      ->get();
+
+        $data = $admins->map(function ($admin) {
+            return [
+                'name' => $admin->name,
+                'avatar' => $admin->avatar ?? 'https://i.pravatar.cc/100?u=' . $admin->email,
+            ];
+        });
+
+        return response()->json($data);
+    }
 }
