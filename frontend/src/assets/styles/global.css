@@ -46,3 +46,20 @@ body {
     3px 3px 2px rgba(63, 1, 100, 0.03), 2px 2px 2px rgba(63, 1, 100, 0.1),
     1px 1px 1px rgba(63, 1, 100, 0.17), 0px 0px 1px rgba(63, 1, 100, 0.2);
 }
+
+.admin-gradient-top{
+width: 1078px;
+height: 75px;
+border-top-left-radius: 8px;
+border-top-right-radius: 8px;
+background: linear-gradient(218.36deg, #46006E 10.8%, #0A0417 100%);
+
+}
+.admin-gradient-bottom{
+height: 99px;
+background: white;
+display: flex;
+justify-content: flex-end;
+align-items: center;
+padding-right: 24px;
+}
