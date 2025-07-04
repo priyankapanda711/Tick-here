@@ -102,4 +102,64 @@ class AdminController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
     }
+     public function getProfile()
+    {
+        $admin = Auth::user(); 
+    
+        if (!$admin) {
+        return response()->json(['message' => 'Admin not found'], 404);
+        }
+    
+        return response()->json([
+        'name' => $admin->name,
+        'username' => $admin->username,
+        'email' => $admin->email,
+        'phone' => $admin->phone,
+        'avatar' => $admin->avatar ?? 'https://i.pravatar.cc/100?u=' . urlencode($admin->email),
+        ]);
+    }
+    // Return all active admins
+    public function getActiveAdmins()
+{
+        $admins = Admin::all(); // Get all admins
+    
+        $data = $admins->map(function ($admin) {
+        return [
+        'name' => $admin->name,
+        'email' => $admin->email,
+        'avatar' => $admin->avatar ?? 'https://i.pravatar.cc/100?u=' . $admin->email
+        ];
+    });
+
+    return response()->json($data);
+    }
+
+     Public function stores(Request $request)
+    {
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:admins,email',
+        'password' => 'required|string|min:6',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => false,
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    $admin = Admin::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Admin created successfully',
+        'data' => $admin
+    ], 201);
+    }
+
 }
