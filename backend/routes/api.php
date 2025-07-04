@@ -161,4 +161,21 @@ Route::middleware(['auth:sanctum', 'admin', 'verified'])->group(function () {
     Route::post('/admin/categories', [EventCategoryController::class, 'create']);
     Route::delete('/admin/categories/{category}', [EventCategoryController::class, 'delete']);
     Route::put('/admin/categories/{category}', [EventCategoryController::class, 'update']);
+
+    //Ticket
+    Route::get('/user-tickets/{userId}', [TicketController::class, 'getTicketsByUser']);
+    Route::post('/book-ticket', [TicketController::class, 'bookTicket']);
+    Route::post('/cancel-ticket', [TicketController::class, 'cancelTicket']);
+    Route::get('/events/{event}/booked-tickets', [TicketController::class, 'getBookedTickets']);
+
+    //Seats
+    Route::get('/seats-by-event/{event_venue_id}', [SeatController::class, 'byEvent']);
+    Route::get('/add-Seats/{location_id}', [SeatController::class, 'addSeats']);
+    Route::get('/get-Seats/{location_id}', [SeatController::class, 'getSeats']);
+    
+    //adminprofile
+    Route::get('/admin/profile', [AdminController::class, 'getProfile']);
+    Route::get('/admin/active', [AdminController::class, 'getActiveAdmins']);
+    Route::post('/admins', [AdminController::class, 'stores']);
+
 });
